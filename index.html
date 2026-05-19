@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PMS-CRM · High Systems Peru</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ══════════════════════════════════════════════
+   VARIABLES GLOBALES
+══════════════════════════════════════════════ */
+:root {
+  --bg:        #0B0E1A;
+  --bg2:       #131728;
+  --bg3:       #1B2035;
+  --bg4:       #232840;
+  --border:    rgba(255,255,255,.07);
+  --border2:   rgba(255,255,255,.13);
+  --text:      #E9EDF6;
+  --muted:     #64708F;
+  --muted2:    #8892B0;
+  --accent:    #4F8EF7;
+  --green:     #00D9A0;
+  --yellow:    #F59E0B;
+  --red:       #EF4444;
+  --purple:    #8B5CF6;
+  --pink:      #EC4899;
+  --r:         8px;
+  --r2:        12px;
+  --r3:        16px;
+  --sidebar:   248px;
+  --font:      'DM Sans',system-ui,sans-serif;
+  --mono:      'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+a{color:inherit;text-decoration:none}
+
+/* ── UTILS ── */
+.hidden{display:none!important}
+.flex{display:flex}.col{flex-direction:column}
+.g1{gap:8px}.g2{gap:14px}.g3{gap:22px}
+.aic{align-items:center}.jcb{justify-content:space-between}
+.wrap{flex-wrap:wrap}.grow{flex:1}
+.bold{font-weight:600}.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}.muted2{color:var(--muted2)}
+.sm{font-size:12px}.xs{font-size:11px}
+.upper{text-transform:uppercase;letter-spacing:.6px}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ta-c{text-align:center}
+.w100{width:100%}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.2px;white-space:nowrap}
+.bv-libre     {background:#0a2e22;color:#00D9A0;border:1px solid #00D9A035}
+.bv-ocupada   {background:#2e1212;color:#EF4444;border:1px solid #EF444435}
+.bv-limpieza  {background:#2e2200;color:#F59E0B;border:1px solid #F59E0B35}
+.bv-reservada {background:#12152e;color:#4F8EF7;border:1px solid #4F8EF735}
+.bv-mantenimiento{background:#1e1e2e;color:#8B5CF6;border:1px solid #8B5CF635}
+.bv-activa    {background:#0a2e22;color:#00D9A0;border:1px solid #00D9A035}
+.bv-pendiente {background:#2e2200;color:#F59E0B;border:1px solid #F59E0B35}
+.bv-checkout  {background:#1a1a2e;color:#8B5CF6;border:1px solid #8B5CF635}
+.bv-cancelada {background:#2e1212;color:#EF4444;border:1px solid #EF444435}
+.bv-nuevo     {background:#1a1a2a;color:#8892B0;border:1px solid #8892B035}
+.bv-recurrente{background:#12152e;color:#4F8EF7;border:1px solid #4F8EF735}
+.bv-vip       {background:#2a1a35;color:#8B5CF6;border:1px solid #8B5CF635}
+.bv-corporativo{background:#0a2020;color:#00D9A0;border:1px solid #00D9A035}
+.bv-mochilero {background:#2e2200;color:#F59E0B;border:1px solid #F59E0B35}
+.bv-grupo     {background:#2e1525;color:#EC4899;border:1px solid #EC489935}
+.bv-alta      {color:#EF4444;font-weight:700}
+.bv-media     {color:#F59E0B;font-weight:700}
+.bv-baja      {color:#00D9A0;font-weight:700}
+
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px}
+.card-sm{padding:14px}
+.card-xs{padding:10px 14px}
+.ct{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+
+/* ── STATS ── */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px 18px}
+.st-v{font-size:28px;font-weight:700;line-height:1;margin:5px 0 3px}
+.st-l{font-size:12px;color:var(--muted)}
+.st-s{font-size:11px;color:var(--muted);margin-top:3px}
+.st.ca{border-color:#4F8EF740}.st.cg{border-color:#00D9A040}
+.st.cy{border-color:#F59E0B40}.st.cr{border-color:#EF444440}
+.st.cp{border-color:#8B5CF640}.st.ck{border-color:#EC489940}
+
+/* ── BOTONES ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);border:none;cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font);transition:all .15s;white-space:nowrap;user-select:none}
+.btn:hover{filter:brightness(1.12)}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--accent);color:#fff}
+.btn-g{background:var(--green);color:#031a12}
+.btn-y{background:var(--yellow);color:#1a1000}
+.btn-r{background:var(--red);color:#fff}
+.btn-v{background:var(--purple);color:#fff}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text)}
+.btn-o:hover{background:var(--bg3)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-xs{padding:3px 9px;font-size:11px}
+.ico{padding:6px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border);color:var(--muted2);cursor:pointer;font-size:13px;line-height:1;transition:all .15s;display:inline-flex;align-items:center}
+.ico:hover{color:var(--text);border-color:var(--border2)}
+
+/* ── FORM ── */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--muted2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 12px;border-radius:var(--r);font-size:14px;font-family:var(--font);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;min-height:70px}
+.gr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ── TABLA ── */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:8px 13px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.tda{display:flex;gap:5px;align-items:center}
+
+/* ── PROGRESS ── */
+.pb{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin:6px 0}
+.pf{height:100%;border-radius:3px;transition:width .4s}
+
+/* ── MAPA ── */
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.rt{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:14px;cursor:pointer;transition:all .18s;text-align:center}
+.rt:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.rt.libre    {border-color:#00D9A030}.rt.ocupada  {border-color:#EF444430}
+.rt.limpieza {border-color:#F59E0B30}.rt.reservada{border-color:#4F8EF730}
+.rt.mantenimiento{border-color:#8B5CF630}
+.rn{font-size:22px;font-weight:700;margin-bottom:3px}
+.rtp{font-size:11px;color:var(--muted);margin-bottom:8px}
+.rpr{font-size:11px;color:var(--muted2);margin-top:6px}
+
+/* ── SIDEBAR ── */
+#app{display:flex;min-height:100vh}
+#sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sl{padding:18px 18px 16px;border-bottom:1px solid var(--border)}
+.sl h1{font-size:15px;font-weight:700}.sl h1 span{color:var(--green)}
+.sl p{font-size:11px;color:var(--muted);margin-top:2px}
+.su{margin:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
+.sun{font-size:13px;font-weight:500}.sur{font-size:11px;color:var(--muted);text-transform:capitalize}
+.ss{padding:6px 16px 2px;font-size:10px;font-weight:700;color:var(--bg4);text-transform:uppercase;letter-spacing:1.2px;margin-top:6px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--muted2);border-left:2px solid transparent;transition:all .14s;user-select:none}
+.ni:hover{color:var(--text);background:var(--bg3)}
+.ni.active{color:var(--text);border-left-color:var(--accent);background:var(--bg3);font-weight:500}
+.ni .ic{font-size:14px;width:17px;text-align:center}
+.sf{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+
+/* ── MAIN ── */
+#main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+#content{padding:24px;flex:1;overflow-y:auto}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.ph h1{font-size:21px;font-weight:700}.ph p{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* ── LOGIN ── */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+#login::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(79,142,247,.09) 0%,transparent 65%)}
+.lb{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:38px;width:370px;position:relative;z-index:1}
+.ll{text-align:center;margin-bottom:26px}
+.ll h2{font-size:24px;font-weight:700}.ll h2 span{color:var(--green)}
+.ll p{font-size:12px;color:var(--muted);margin-top:5px}
+.lerr{color:var(--red);font-size:12px;text-align:center;margin-top:8px;padding:7px;background:#2e121215;border-radius:var(--r)}
+
+/* ── MODAL ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.68);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.mo{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:26px;width:530px;max-width:100%;max-height:90vh;overflow-y:auto}
+.mt{font-size:16px;font-weight:700;margin-bottom:18px}
+.mf{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:22px;right:22px;padding:11px 18px;border-radius:var(--r2);font-size:13px;font-weight:500;z-index:400;pointer-events:none;transition:all .25s;transform:translateY(10px);opacity:0;max-width:340px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.ok {background:#0a2e22;border:1px solid #00D9A045;color:#00D9A0}
+#toast.er {background:#2e1212;border:1px solid #EF444445;color:#EF4444}
+#toast.in {background:var(--bg3);border:1px solid var(--border2);color:var(--text)}
+
+/* ── CRM PERFIL ── */
+.perfil-header{background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);border:1px solid var(--border2);border-radius:var(--r2);padding:20px;margin-bottom:16px}
+.perfil-avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:14px}
+.kpi{background:var(--bg4);border-radius:var(--r);padding:10px 12px;text-align:center}
+.kpi-v{font-size:18px;font-weight:700;color:var(--green)}
+.kpi-l{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── IA PANEL ── */
+.ia-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:14px}
+.ia-output{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;min-height:80px;color:var(--muted2)}
+.ia-output.loaded{color:var(--text)}
+.ia-stars{display:flex;gap:4px;font-size:22px;cursor:pointer;margin:8px 0}
+.ia-stars span{transition:transform .1s}.ia-stars span:hover{transform:scale(1.2)}
+
+/* ── CHECKLIST ── */
+.cl-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.cl-item:last-child{border:none}
+.cl-item.done span{text-decoration:line-through;color:var(--muted)}
+
+/* ── PIPE FIDELIZACION ── */
+.pipe{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.pipe-col{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:14px}
+.pipe-title{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.pipe-card{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:8px;font-size:12px;cursor:pointer}
+.pipe-card:hover{border-color:var(--accent)}
+.pipe-card:last-child{margin-bottom:0}
+
+@media(max-width:768px){
+  #sidebar{display:none}
+  #content{padding:14px}
+  .gr2,.gr3{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════ -->
+<div id="login">
+  <div class="lb">
+    <div class="ll">
+      <h2 id="ll-name">Hostal <span>PMS</span></h2>
+      <p>by High Systems Peru · Sistema CRM hotelero</p>
+    </div>
+    <div class="field"><label>Correo</label>
+      <input id="le" type="email" placeholder="admin@hostal.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="field"><label>Contraseña</label>
+      <input id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn btn-p w100" style="justify-content:center;margin-top:4px" onclick="doLogin()">Ingresar →</button>
+    <div id="lerr" class="lerr hidden"></div>
+    <p class="sm muted ta-c" style="margin-top:14px">Demo: admin@hostal.com · 123456</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP
+══════════════════════════════════════════ -->
+<div id="app" class="hidden">
+  <aside id="sidebar">
+    <div class="sl">
+      <h1 id="sb-name">Hostal <span>PMS</span></h1>
+      <p>by High Systems Peru</p>
+    </div>
+    <div class="su">
+      <div class="sun" id="sb-uname">—</div>
+      <div class="sur" id="sb-role">—</div>
+    </div>
+
+    <div id="nav-admin" class="hidden">
+      <div class="ss">Principal</div>
+      <div class="ni" data-p="dashboard"><span class="ic">📊</span>Dashboard</div>
+      <div class="ss">Operación</div>
+      <div class="ni" data-p="habitaciones"><span class="ic">🛏</span>Habitaciones</div>
+      <div class="ni" data-p="reservas"><span class="ic">📅</span>Reservas</div>
+      <div class="ni" data-p="checkin"><span class="ic">↘</span>Check-in</div>
+      <div class="ni" data-p="checkout"><span class="ic">↗</span>Check-out</div>
+      <div class="ss">CRM</div>
+      <div class="ni" data-p="huespedes"><span class="ic">👤</span>Huéspedes</div>
+      <div class="ni" data-p="fidelizacion"><span class="ic">🏆</span>Fidelización</div>
+      <div class="ni" data-p="resenas"><span class="ic">⭐</span>Reseñas + IA</div>
+      <div class="ni" data-p="comunicaciones"><span class="ic">💬</span>Comunicaciones</div>
+      <div class="ss">Marketing</div>
+      <div class="ni" data-p="campanas"><span class="ic">📣</span>Campañas ROI</div>
+      <div class="ss">Calidad</div>
+      <div class="ni" data-p="checklist"><span class="ic">🌟</span>Checklist 3★</div>
+    </div>
+
+    <div id="nav-recepcion" class="hidden">
+      <div class="ss">Recepción</div>
+      <div class="ni" data-p="mapa"><span class="ic">🗺</span>Mapa de pisos</div>
+      <div class="ni" data-p="checkin"><span class="ic">↘</span>Check-in</div>
+      <div class="ni" data-p="checkout"><span class="ic">↗</span>Check-out</div>
+      <div class="ni" data-p="huespedes"><span class="ic">👤</span>Huéspedes</div>
+      <div class="ni" data-p="reservas"><span class="ic">📅</span>Reservas</div>
+    </div>
+
+    <div id="nav-limpieza" class="hidden">
+      <div class="ss">Limpieza</div>
+      <div class="ni" data-p="cola"><span class="ic">🧹</span>Cola de cuartos</div>
+      <div class="ni" data-p="incidencias"><span class="ic">⚠</span>Incidencias</div>
+    </div>
+
+    <div class="sf">
+      <button class="btn btn-o btn-sm w100" style="justify-content:center" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <div id="main">
+    <div id="content">
+
+      <!-- DASHBOARD -->
+      <div id="pg-dashboard" class="hidden">
+        <div class="ph"><div><h1>Dashboard</h1><p id="dash-date"></p></div>
+          <button class="btn btn-o btn-sm" onclick="go('dashboard')">↺ Actualizar</button>
+        </div>
+        <div class="sg">
+          <div class="st cg"><div class="st-l">Habitaciones libres</div><div class="st-v" id="d1">—</div></div>
+          <div class="st cr"><div class="st-l">Ocupadas</div><div class="st-v" id="d2">—</div></div>
+          <div class="st cy"><div class="st-l">En limpieza</div><div class="st-v" id="d3">—</div></div>
+          <div class="st ca"><div class="st-l">Reservadas</div><div class="st-v" id="d4">—</div></div>
+          <div class="st cp"><div class="st-l">Check-outs hoy</div><div class="st-v" id="d5">—</div></div>
+          <div class="st ck"><div class="st-l">Huéspedes VIP</div><div class="st-v" id="d6">—</div></div>
+        </div>
+        <div class="flex g2 wrap">
+          <div class="card grow" style="min-width:280px">
+            <div class="ct">Reservas activas</div>
+            <div class="tw"><table>
+              <thead><tr><th>Huésped</th><th>Hab.</th><th>Salida</th><th>Estado</th></tr></thead>
+              <tbody id="d-tbl"></tbody>
+            </table></div>
+          </div>
+          <div class="card" style="min-width:220px">
+            <div class="ct">Pipeline CRM</div>
+            <div id="d-pipe" class="flex col g1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HABITACIONES -->
+      <div id="pg-habitaciones" class="hidden">
+        <div class="ph"><div><h1>Habitaciones</h1><p>Inventario completo de cuartos</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-hab');resetForm('hab')">+ Nueva habitación</button>
+        </div>
+        <div class="card">
+          <div class="flex aic g2 wrap" style="margin-bottom:14px">
+            <input id="hab-q" placeholder="Buscar número o tipo…" style="max-width:240px" oninput="rHabs()"/>
+            <select id="hab-f" style="max-width:150px" onchange="rHabs()">
+              <option value="">Todos los estados</option>
+              <option value="libre">Libre</option><option value="ocupada">Ocupada</option>
+              <option value="limpieza">Limpieza</option><option value="reservada">Reservada</option>
+              <option value="mantenimiento">Mantenimiento</option>
+            </select>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Piso</th><th>Precio</th><th>Cap.</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="hab-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- MAPA -->
+      <div id="pg-mapa" class="hidden">
+        <div class="ph"><div><h1>Mapa de pisos</h1><p>Toca una habitación para actuar</p></div>
+          <div class="flex g1 wrap">
+            <span class="badge bv-libre">Libre</span><span class="badge bv-ocupada">Ocupada</span>
+            <span class="badge bv-limpieza">Limpieza</span><span class="badge bv-reservada">Reservada</span>
+          </div>
+        </div>
+        <div id="mapa-c" class="rooms-grid"></div>
+      </div>
+
+      <!-- HUÉSPEDES CRM -->
+      <div id="pg-huespedes" class="hidden">
+        <div class="ph"><div><h1>Huéspedes</h1><p>Perfiles CRM · historial · segmentación</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-huesp');resetForm('huesp')">+ Nuevo huésped</button>
+        </div>
+        <div class="card">
+          <div class="flex aic g2 wrap" style="margin-bottom:14px">
+            <input id="hu-q" placeholder="Buscar nombre, DNI o teléfono…" style="max-width:280px" oninput="rHuespedes()"/>
+            <select id="hu-f" style="max-width:150px" onchange="rHuespedes()">
+              <option value="">Todos los segmentos</option>
+              <option value="nuevo">Nuevo</option><option value="recurrente">Recurrente</option>
+              <option value="vip">VIP</option><option value="corporativo">Corporativo</option>
+              <option value="mochilero">Mochilero</option><option value="grupo">Grupo</option>
+            </select>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>Nombre</th><th>DNI</th><th>Tel.</th><th>Segmento</th><th>Estadías</th><th>Gasto total</th><th>Canal</th><th></th></tr></thead>
+            <tbody id="hu-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- PERFIL HUÉSPED (sub-página) -->
+      <div id="pg-perfil" class="hidden">
+        <div class="ph">
+          <div><h1>Perfil del huésped</h1><p>Vista CRM completa</p></div>
+          <button class="btn btn-o btn-sm" onclick="go('huespedes')">← Volver</button>
+        </div>
+        <div id="perfil-c"></div>
+      </div>
+
+      <!-- FIDELIZACIÓN -->
+      <div id="pg-fidelizacion" class="hidden">
+        <div class="ph"><div><h1>Pipeline de fidelización</h1><p>Nuevo → Recurrente → VIP</p></div></div>
+        <div class="pipe" id="pipe-c"></div>
+      </div>
+
+      <!-- RESEÑAS + IA -->
+      <div id="pg-resenas" class="hidden">
+        <div class="ph"><div><h1>Reseñas + IA</h1><p>Gestiona y responde con inteligencia artificial</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-resena');resetForm('resena')">+ Nueva reseña</button>
+        </div>
+        <div class="sg">
+          <div class="st cg"><div class="st-l">Promedio general</div><div class="st-v" id="res-avg">—</div></div>
+          <div class="st ca"><div class="st-l">Total reseñas</div><div class="st-v" id="res-tot">—</div></div>
+          <div class="st cy"><div class="st-l">Sin responder</div><div class="st-v" id="res-pen">—</div></div>
+        </div>
+        <div id="res-lista" class="flex col g2"></div>
+      </div>
+
+      <!-- COMUNICACIONES CRM -->
+      <div id="pg-comunicaciones" class="hidden">
+        <div class="ph"><div><h1>Comunicaciones</h1><p>Mensajes automáticos a huéspedes</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-comu')">+ Nueva comunicación</button>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="ct">Plantillas rápidas con IA</div>
+          <div class="flex g2 wrap">
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('bienvenida')">📩 Bienvenida</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('post_checkout')">🙏 Post check-out</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('oferta')">🎁 Oferta especial</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('retención')">💎 Retención VIP</button>
+          </div>
+          <div id="plantilla-out" class="ia-output" style="margin-top:12px">Selecciona una plantilla para generar el mensaje con IA…</div>
+        </div>
+        <div class="card">
+          <div class="ct">Historial de comunicaciones</div>
+          <div class="tw"><table>
+            <thead><tr><th>Huésped</th><th>Tipo</th><th>Canal</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="comu-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- CAMPAÑAS -->
+      <div id="pg-campanas" class="hidden">
+        <div class="ph"><div><h1>Campañas de marketing</h1><p>ROI por canal · TikTok · Instagram · Google</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-camp');resetForm('camp')">+ Nueva campaña</button>
+        </div>
+        <div class="sg">
+          <div class="st"><div class="st-l">Total invertido</div><div class="st-v" id="c-inv">S/0</div></div>
+          <div class="st cg"><div class="st-l">Reservas generadas</div><div class="st-v" id="c-res">0</div></div>
+          <div class="st ca"><div class="st-l">Ingresos atribuidos</div><div class="st-v" id="c-ing">S/0</div></div>
+          <div class="st cp"><div class="st-l">ROI promedio</div><div class="st-v" id="c-roi">—</div></div>
+        </div>
+        <div class="card">
+          <div class="tw"><table>
+            <thead><tr><th>Campaña</th><th>Canal</th><th>Inversión</th><th>Reservas</th><th>Ingresos</th><th>ROI</th><th>Fecha</th><th></th></tr></thead>
+            <tbody id="camp-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div id="pg-checkin" class="hidden">
+        <div class="ph"><div><h1>Check-in</h1><p>Registrar llegada de huésped</p></div></div>
+        <div class="card" style="max-width:560px">
+          <div class="ct">Datos del huésped</div>
+          <div class="gr2">
+            <div class="field"><label>Nombre completo *</label><input id="ci-nom" placeholder="Juan Pérez García"/></div>
+            <div class="field"><label>DNI / Pasaporte *</label><input id="ci-dni" placeholder="12345678"/></div>
+          </div>
+          <div class="gr2">
+            <div class="field"><label>Teléfono</label><input id="ci-tel" placeholder="955 123 456"/></div>
+            <div class="field"><label>Email</label><input id="ci-ema" type="email" placeholder="juan@correo.com"/></div>
+          </div>
+          <div class="ct" style="margin-top:4px">Estadía</div>
+          <div class="gr2">
+            <div class="field"><label>Habitación libre *</label><select id="ci-hab"></select></div>
+            <div class="field"><label>Fecha de salida *</label><input id="ci-sal" type="date"/></div>
+          </div>
+          <div class="gr2">
+            <div class="field"><label>Canal de origen</label>
+              <select id="ci-ori">
+                <option value="directo">Directo / Walk-in</option>
+                <option value="booking">Booking.com</option><option value="airbnb">Airbnb</option>
+                <option value="tiktok">TikTok</option><option value="instagram">Instagram</option>
+                <option value="whatsapp">WhatsApp</option><option value="google">Google</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div class="field"><label>Notas</label><input id="ci-not" placeholder="Observaciones…"/></div>
+          </div>
+          <button class="btn btn-g" onclick="doCheckin()">✓ Confirmar Check-in</button>
+        </div>
+      </div>
+
+      <!-- CHECK-OUT -->
+      <div id="pg-checkout" class="hidden">
+        <div class="ph"><div><h1>Check-out</h1><p>Registrar salida de huésped</p></div></div>
+        <div class="card">
+          <div class="ct">Reservas activas</div>
+          <div class="tw"><table>
+            <thead><tr><th>Huésped</th><th>Segmento</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Noches</th><th>Total</th><th></th></tr></thead>
+            <tbody id="co-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- RESERVAS -->
+      <div id="pg-reservas" class="hidden">
+        <div class="ph"><div><h1>Reservas</h1><p>Gestión completa</p></div>
+          <button class="btn btn-p btn-sm" id="btn-nueva-reserva">+ Nueva reserva</button>
+        </div>
+        <div class="card">
+          <div class="flex aic g2 wrap" style="margin-bottom:14px">
+            <input id="res-q" placeholder="Buscar huésped…" style="max-width:240px" oninput="rReservas()"/>
+            <select id="res-f" style="max-width:150px" onchange="rReservas()">
+              <option value="">Todos</option><option value="activa">Activa</option>
+              <option value="pendiente">Pendiente</option><option value="checkout">Check-out</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>Huésped</th><th>Hab.</th><th>Entrada</th><th>Salida</th><th>Canal</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="res-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- COLA LIMPIEZA -->
+      <div id="pg-cola" class="hidden">
+        <div class="ph"><div><h1>Cola de limpieza</h1><p>Cuartos pendientes por prioridad</p></div></div>
+        <div id="cola-c" class="flex col g1"></div>
+      </div>
+
+      <!-- INCIDENCIAS -->
+      <div id="pg-incidencias" class="hidden">
+        <div class="ph"><div><h1>Incidencias</h1><p>Mantenimiento y problemas</p></div>
+          <button class="btn btn-y btn-sm" id="btn-nueva-inci">+ Reportar</button>
+        </div>
+        <div class="card">
+          <div class="tw"><table>
+            <thead><tr><th>Habitación</th><th>Descripción</th><th>Prioridad</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
+            <tbody id="inci-tbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- CHECKLIST 3★ -->
+      <div id="pg-checklist" class="hidden">
+        <div class="ph"><div><h1>Checklist 3 estrellas ⭐⭐⭐</h1><p>Requisitos MINCETUR</p></div></div>
+        <div class="card" style="margin-bottom:18px">
+          <div class="flex jcb aic" style="margin-bottom:8px">
+            <span class="bold">Progreso total</span>
+            <span id="cl-pct" style="font-size:20px;font-weight:700;color:var(--accent)">0%</span>
+          </div>
+          <div class="pb"><div id="cl-bar" class="pf" style="width:0%;background:var(--accent)"></div></div>
+          <p class="sm muted" id="cl-sub" style="margin-top:6px"></p>
+        </div>
+        <div id="cl-c" class="flex col g2"></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════════
+     MODALES
+══════════════════════════════════════════ -->
+
+<!-- Habitación -->
+<div id="m-hab" class="ov hidden">
+  <div class="mo">
+    <div class="mt" id="mh-title">Nueva habitación</div>
+    <input type="hidden" id="mh-id"/>
+    <div class="gr2">
+      <div class="field"><label>Número *</label><input id="mh-num" placeholder="101"/></div>
+      <div class="field"><label>Piso</label><input id="mh-piso" type="number" placeholder="1"/></div>
+    </div>
+    <div class="gr3">
+      <div class="field"><label>Tipo</label>
+        <select id="mh-tipo"><option>Simple</option><option>Doble</option><option>Triple</option><option>Suite</option><option>Matrimonial</option></select>
+      </div>
+      <div class="field"><label>Capacidad</label><input id="mh-cap" type="number" placeholder="2"/></div>
+      <div class="field"><label>Precio S/</label><input id="mh-precio" type="number" placeholder="60"/></div>
+    </div>
+    <div class="gr2">
+      <div class="field"><label>Estado</label>
+        <select id="mh-est"><option value="libre">Libre</option><option value="ocupada">Ocupada</option><option value="limpieza">Limpieza</option><option value="reservada">Reservada</option><option value="mantenimiento">Mantenimiento</option></select>
+      </div>
+      <div class="field"><label>Comodidades</label><input id="mh-desc" placeholder="TV, WiFi, baño privado…"/></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-hab')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveHab()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Huésped -->
+<div id="m-huesp" class="ov hidden">
+  <div class="mo">
+    <div class="mt" id="mhu-title">Nuevo huésped</div>
+    <input type="hidden" id="mhu-id"/>
+    <div class="gr2">
+      <div class="field"><label>Nombre *</label><input id="mhu-nom" placeholder="Juan Pérez García"/></div>
+      <div class="field"><label>DNI / Pasaporte</label><input id="mhu-dni" placeholder="12345678"/></div>
+    </div>
+    <div class="gr2">
+      <div class="field"><label>Teléfono</label><input id="mhu-tel" placeholder="955 123 456"/></div>
+      <div class="field"><label>Email</label><input id="mhu-ema" type="email" placeholder="juan@correo.com"/></div>
+    </div>
+    <div class="gr2">
+      <div class="field"><label>Nacionalidad</label><input id="mhu-nac" placeholder="Peruana"/></div>
+      <div class="field"><label>Fecha de nacimiento</label><input id="mhu-fnac" type="date"/></div>
+    </div>
+    <div class="gr2">
+      <div class="field"><label>Segmento CRM</label>
+        <select id="mhu-seg"><option value="nuevo">Nuevo</option><option value="recurrente">Recurrente</option><option value="vip">VIP</option><option value="corporativo">Corporativo</option><option value="mochilero">Mochilero</option><option value="grupo">Grupo</option></select>
+      </div>
+      <div class="field"><label>Canal frecuente</label>
+        <select id="mhu-canal"><option value="">—</option><option value="directo">Directo</option><option value="booking">Booking.com</option><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Notas CRM</label><textarea id="mhu-notas" placeholder="Preferencias, observaciones especiales…"></textarea></div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-huesp')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveHuesped()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reserva -->
+<div id="m-reserva" class="ov hidden">
+  <div class="mo">
+    <div class="mt" id="mres-title">Nueva reserva</div>
+    <input type="hidden" id="mres-id"/>
+    <div class="gr2">
+      <div class="field"><label>Huésped *</label><select id="mres-hu"></select></div>
+      <div class="field"><label>Habitación *</label><select id="mres-hab"></select></div>
+    </div>
+    <div class="gr2">
+      <div class="field"><label>Fecha entrada *</label><input id="mres-ent" type="date"/></div>
+      <div class="field"><label>Fecha salida *</label><input id="mres-sal" type="date"/></div>
+    </div>
+    <div class="gr3">
+      <div class="field"><label>Canal</label>
+        <select id="mres-ori"><option value="directo">Directo</option><option value="booking">Booking</option><option value="airbnb">Airbnb</option><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="whatsapp">WhatsApp</option><option value="google">Google</option><option value="otro">Otro</option></select>
+      </div>
+      <div class="field"><label>Total S/ (auto)</label><input id="mres-tot" type="number" placeholder="Calculado…"/></div>
+      <div class="field"><label>Estado</label>
+        <select id="mres-est"><option value="pendiente">Pendiente</option><option value="activa">Confirmada</option><option value="cancelada">Cancelada</option></select>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-reserva')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveReserva()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reseña -->
+<div id="m-resena" class="ov hidden">
+  <div class="mo">
+    <div class="mt">Nueva reseña</div>
+    <input type="hidden" id="mre-id"/>
+    <div class="gr2">
+      <div class="field"><label>Plataforma</label>
+        <select id="mre-plat"><option value="google">Google</option><option value="booking">Booking.com</option><option value="tripadvisor">TripAdvisor</option><option value="otro">Otro</option></select>
+      </div>
+      <div class="field"><label>Autor</label><input id="mre-autor" placeholder="Nombre del reseñador"/></div>
+    </div>
+    <div class="field"><label>Puntuación</label>
+      <div class="ia-stars" id="stars-input">
+        <span onclick="setStar(1)">☆</span><span onclick="setStar(2)">☆</span><span onclick="setStar(3)">☆</span><span onclick="setStar(4)">☆</span><span onclick="setStar(5)">☆</span>
+      </div>
+      <input type="hidden" id="mre-pts" value="5"/>
+    </div>
+    <div class="field"><label>Texto de la reseña</label><textarea id="mre-txt" placeholder="Texto que escribió el cliente…" rows="4"></textarea></div>
+    <div class="field"><label>Fecha</label><input id="mre-fecha" type="date"/></div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-resena')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveResena()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Comunicación -->
+<div id="m-comu" class="ov hidden">
+  <div class="mo">
+    <div class="mt">Nueva comunicación</div>
+    <div class="gr2">
+      <div class="field"><label>Huésped</label><select id="mco-hu"></select></div>
+      <div class="field"><label>Canal</label>
+        <select id="mco-canal"><option value="whatsapp">WhatsApp</option><option value="email">Email</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="mco-tipo"><option value="bienvenida">Bienvenida</option><option value="post_checkout">Post check-out</option><option value="oferta">Oferta especial</option><option value="retención">Retención VIP</option><option value="cumpleanos">Cumpleaños</option></select>
+    </div>
+    <div class="field"><label>Mensaje</label><textarea id="mco-msg" rows="5" placeholder="Escribe el mensaje o genera uno con IA…"></textarea></div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-comu')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveComu()">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Campaña -->
+<div id="m-camp" class="ov hidden">
+  <div class="mo">
+    <div class="mt">Nueva campaña</div>
+    <input type="hidden" id="mc-id"/>
+    <div class="field"><label>Nombre *</label><input id="mc-nom" placeholder="Promo finde largo mayo"/></div>
+    <div class="gr2">
+      <div class="field"><label>Canal</label>
+        <select id="mc-canal"><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="google">Google Ads</option><option value="facebook">Facebook</option><option value="whatsapp">WhatsApp</option><option value="otro">Otro</option></select>
+      </div>
+      <div class="field"><label>Fecha</label><input id="mc-fecha" type="date"/></div>
+    </div>
+    <div class="gr3">
+      <div class="field"><label>Inversión S/</label><input id="mc-inv" type="number" placeholder="150"/></div>
+      <div class="field"><label>Reservas obtenidas</label><input id="mc-res" type="number" placeholder="8"/></div>
+      <div class="field"><label>Ingresos S/</label><input id="mc-ing" type="number" placeholder="960"/></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-camp')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveCamp()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Incidencia -->
+<div id="m-inci" class="ov hidden">
+  <div class="mo">
+    <div class="mt">Reportar incidencia</div>
+    <div class="gr2">
+      <div class="field"><label>Habitación</label><select id="mi-hab"></select></div>
+      <div class="field"><label>Prioridad</label>
+        <select id="mi-pri"><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Descripción *</label><textarea id="mi-desc" placeholder="Detalla el problema…"></textarea></div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeMod('m-inci')">Cancelar</button>
+      <button class="btn btn-y" onclick="saveInci()">Reportar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   ⚙️  CONFIGURACIÓN — EDITA ESTOS 3 VALORES
+   ══════════════════════════════════════════════════════
+   1. Entra a supabase.com → tu proyecto → Settings → API
+   2. Copia "Project URL" y "anon public key"
+   3. Entra a console.anthropic.com → API Keys → Create key
+   ══════════════════════════════════════════════════════ */
+const CFG = {
+  SB_URL:       'PEGA_AQUI_TU_SUPABASE_URhttps://wrzirgqfxlwcmhzbdxxv.supabase.coL',
+  SB_ANON:      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyemlyZ3FmeGx3Y21oemJkeHh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMDM4NjIsImV4cCI6MjA5NDc3OTg2Mn0.nb__-vZtpnqBenHBcQDFdK-yWNbmczTnjBXTK3p5_8E',
+  CLAUDE_KEY:   'PEGA_AQUI_TU_ANTHROPIC_API_KEY',
+  HOSTAL_NAME:  'Mi Hostal',   // ← cambia al nombre del hostal cliente
+};
+
+/* ════════════════════════════════════════════════════
+   ESTADO GLOBAL
+════════════════════════════════════════════════════ */
+let sb = null;
+let ME = { nombre:'', rol:'admin' };
+let D  = { habs:[], huespedes:[], reservas:[], campanas:[], resenas:[], comunicaciones:[], incidencias:[] };
+
+// ── DEMO DATA ──────────────────────────────────────
+const DEMO = {
+  habs:[
+    {id:1,numero:'101',tipo:'Simple',piso:1,precio:45,capacidad:1,estado:'libre',descripcion:'TV, baño privado'},
+    {id:2,numero:'102',tipo:'Doble',piso:1,precio:70,capacidad:2,estado:'ocupada',descripcion:'TV, baño privado, WiFi'},
+    {id:3,numero:'103',tipo:'Doble',piso:1,precio:70,capacidad:2,estado:'limpieza',descripcion:'TV, WiFi'},
+    {id:4,numero:'104',tipo:'Triple',piso:1,precio:95,capacidad:3,estado:'libre',descripcion:'TV, baño privado'},
+    {id:5,numero:'201',tipo:'Matrimonial',piso:2,precio:80,capacidad:2,estado:'reservada',descripcion:'TV, agua caliente'},
+    {id:6,numero:'202',tipo:'Suite',piso:2,precio:140,capacidad:2,estado:'libre',descripcion:'Jacuzzi, TV, minibar'},
+    {id:7,numero:'203',tipo:'Simple',piso:2,precio:45,capacidad:1,estado:'libre',descripcion:'TV, baño compartido'},
+    {id:8,numero:'204',tipo:'Doble',piso:2,precio:70,capacidad:2,estado:'ocupada',descripcion:'TV, baño privado'},
+  ],
+  huespedes:[
+    {id:1,nombre:'Carlos Mendoza Ruiz',dni:'45123678',telefono:'955 123 456',email:'carlos@email.com',nacionalidad:'Peruana',etiqueta:'vip',total_estancias:5,gasto_total:840,canal_frecuente:'booking',notas_crm:'Prefiere habitaciones altas. Siempre reserva con anticipación.',created_at:'2024-01-15'},
+    {id:2,nombre:'Ana Torres Vega',dni:'38456789',telefono:'944 987 654',email:'ana@email.com',nacionalidad:'Peruana',etiqueta:'recurrente',total_estancias:3,gasto_total:420,canal_frecuente:'instagram',notas_crm:'Viaja con pareja. Le gustan las promociones de fin de semana.',created_at:'2024-03-08'},
+    {id:3,nombre:'Luis Ramírez Silva',dni:'12345678',telefono:'966 111 222',email:'',nacionalidad:'Colombiana',etiqueta:'nuevo',total_estancias:1,gasto_total:140,canal_frecuente:'directo',notas_crm:'',created_at:'2025-05-01'},
+  ],
+  reservas:[
+    {id:1,huesped_id:1,habitacion_id:2,fecha_entrada:'2025-05-10',fecha_salida:'2025-05-14',origen:'booking',total:280,estado:'activa'},
+    {id:2,huesped_id:2,habitacion_id:5,fecha_entrada:'2025-05-11',fecha_salida:'2025-05-13',origen:'instagram',total:160,estado:'activa'},
+    {id:3,huesped_id:3,habitacion_id:8,fecha_entrada:'2025-05-12',fecha_salida:'2025-05-15',origen:'directo',total:210,estado:'activa'},
+    {id:4,huesped_id:1,habitacion_id:1,fecha_entrada:'2025-05-20',fecha_salida:'2025-05-22',origen:'instagram',total:90,estado:'pendiente'},
+  ],
+  campanas:[
+    {id:1,nombre:'Promo San Valentín',canal:'instagram',inversion:120,reservas:9,ingresos:720,fecha:'2025-02-10'},
+    {id:2,nombre:'Finde largo abril',canal:'tiktok',inversion:80,reservas:14,ingresos:980,fecha:'2025-04-25'},
+    {id:3,nombre:'Google Ads Mayo',canal:'google',inversion:200,reservas:6,ingresos:480,fecha:'2025-05-01'},
+  ],
+  resenas:[
+    {id:1,plataforma:'google',autor:'Maria L.',puntuacion:5,texto:'Excelente atención, muy limpio y la ubicación es perfecta. Volveré sin duda.',respuesta:'',respondida:false,fecha:'2025-05-10'},
+    {id:2,plataforma:'booking',autor:'Turista anónimo',puntuacion:3,texto:'El hostal está bien pero la ducha del baño tardaba en calentar el agua.',respuesta:'',respondida:false,fecha:'2025-05-08'},
+    {id:3,plataforma:'google',autor:'Roberto K.',puntuacion:4,texto:'Muy buena relación calidad-precio. El personal es amable.',respuesta:'Gracias Roberto, fue un placer tenerte.',respondida:true,fecha:'2025-05-01'},
+  ],
+  comunicaciones:[
+    {id:1,huesped_id:1,tipo:'post_checkout',canal:'whatsapp',mensaje:'Gracias Carlos por tu estadía…',enviado:true,created_at:'2025-05-14'},
+  ],
+  incidencias:[
+    {id:1,habitacion_id:3,descripcion:'Fuga leve en la ducha',prioridad:'alta',estado:'pendiente',created_at:'2025-05-12'},
+    {id:2,habitacion_id:7,descripcion:'Bombilla fundida en baño',prioridad:'baja',estado:'pendiente',created_at:'2025-05-11'},
+  ],
+};
+
+/* ════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  el('ll-name').innerHTML = `${CFG.HOSTAL_NAME} <span>PMS</span>`;
+  el('sb-name').innerHTML = `${CFG.HOSTAL_NAME} <span>PMS</span>`;
+  if(CFG.SB_URL!=='PEGA_AQUI_TU_SUPABASE_URL') sb=supabase.createClient(CFG.SB_URL,CFG.SB_ANON);
+
+  document.querySelectorAll('.ni[data-p]').forEach(n=>n.addEventListener('click',()=>go(n.dataset.p)));
+  document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeMod(o.id)}));
+
+  el('btn-nueva-reserva').onclick=openModalReserva;
+  el('btn-nueva-inci').onclick=()=>{ fillSel('mi-hab',D.habs,h=>({v:h.id,l:`${h.numero} · ${h.tipo}`})); openMod('m-inci'); };
+});
+
+/* ════════════════════════════════════════════════════
+   AUTH
+════════════════════════════════════════════════════ */
+async function doLogin(){
+  const email=val('le').trim(), pass=val('lp');
+  hide('lerr');
+  if(!email||!pass){showErr('lerr','Ingresa correo y contraseña');return;}
+
+  if(!sb){
+    const demos={'admin@hostal.com':{rol:'admin',nombre:'Administrador'},'recep@hostal.com':{rol:'recepcion',nombre:'Recepcionista'},'limpieza@hostal.com':{rol:'limpieza',nombre:'Limpieza'}};
+    const d=demos[email];
+    if(d&&pass==='123456'){loginOK(d);}else showErr('lerr','Demo: admin@hostal.com · 123456');
+    return;
+  }
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){showErr('lerr','Correo o contraseña incorrectos');return;}
+  const {data:p}=await sb.from('perfiles').select('*').eq('user_id',data.user.id).single();
+  loginOK({rol:p?.rol||'recepcion',nombre:p?.nombre||email});
+}
+
+function loginOK({rol,nombre}){
+  ME={nombre,rol};
+  el('sb-uname').textContent=nombre; el('sb-role').textContent=rol;
+  hide('login'); show('app');
+  show('nav-'+rol);
+  if(rol==='admin')go('dashboard');
+  else if(rol==='recepcion')go('mapa');
+  else go('cola');
+  fetchAll();
+}
+
+function doLogout(){
+  if(sb)sb.auth.signOut();
+  hide('app'); show('login'); setv('lp','');
+}
+
+/* ════════════════════════════════════════════════════
+   DATA LAYER
+════════════════════════════════════════════════════ */
+async function fetchAll(){
+  if(!sb){Object.assign(D,{habs:[...DEMO.habs],huespedes:[...DEMO.huespedes],reservas:[...DEMO.reservas],campanas:[...DEMO.campanas],resenas:[...DEMO.resenas],comunicaciones:[...DEMO.comunicaciones],incidencias:[...DEMO.incidencias]});return;}
+  const queries=await Promise.all([
+    sb.from('habitaciones').select('*').order('numero'),
+    sb.from('huespedes').select('*').order('nombre'),
+    sb.from('reservas').select('*').order('created_at',{ascending:false}),
+    sb.from('campanas').select('*').order('fecha',{ascending:false}),
+    sb.from('resenas').select('*').order('fecha',{ascending:false}),
+    sb.from('comunicaciones').select('*').order('created_at',{ascending:false}),
+    sb.from('incidencias').select('*').order('created_at',{ascending:false}),
+  ]);
+  const keys=['habs','huespedes','reservas','campanas','resenas','comunicaciones','incidencias'];
+  queries.forEach((q,i)=>D[keys[i]]=q.data||[]);
+}
+
+async function dbIns(t,o){
+  if(!sb){const r={id:Date.now(),...o};D[t2k(t)].unshift(r);return r;}
+  const {data,error}=await sb.from(t).insert(o).select().single();
+  if(error){toast('Error: '+error.message,'er');return null;}
+  return data;
+}
+async function dbUpd(t,id,o){
+  if(!sb){const arr=D[t2k(t)];const i=arr.findIndex(x=>x.id==id);if(i>=0)Object.assign(arr[i],o);return;}
+  const {error}=await sb.from(t).update(o).eq('id',id);
+  if(error)toast('Error: '+error.message,'er');
+}
+async function dbDel(t,id){
+  if(!sb){const k=t2k(t);D[k]=D[k].filter(x=>x.id!=id);return;}
+  const {error}=await sb.from(t).delete().eq('id',id);
+  if(error)toast('Error: '+error.message,'er');
+}
+const t2k=t=>({habitaciones:'habs',huespedes:'huespedes',reservas:'reservas',campanas:'campanas',resenas:'resenas',comunicaciones:'comunicaciones',incidencias:'incidencias'}[t]);
+
+/* ════════════════════════════════════════════════════
+   NAVEGACIÓN
+════════════════════════════════════════════════════ */
+function go(page){
+  document.querySelectorAll('[id^="pg-"]').forEach(p=>p.classList.add('hidden'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const pg=el('pg-'+page); if(pg)pg.classList.remove('hidden');
+  document.querySelectorAll(`.ni[data-p="${page}"]`).forEach(n=>n.classList.add('active'));
+  ({dashboard:rDash,habitaciones:rHabs,mapa:rMapa,huespedes:rHuespedes,fidelizacion:rFidelizacion,
+    resenas:rResenas,comunicaciones:rComunicaciones,campanas:rCampanas,
+    checkin:setupCI,checkout:rCheckout,reservas:rReservas,cola:rCola,
+    incidencias:rIncidencias,checklist:rChecklist}[page]||noop)();
+}
+
+/* ════════════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════════════ */
+function rDash(){
+  el('dash-date').textContent=new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const hoy=fmt(new Date());
+  el('d1').textContent=D.habs.filter(h=>h.estado==='libre').length;
+  el('d2').textContent=D.habs.filter(h=>h.estado==='ocupada').length;
+  el('d3').textContent=D.habs.filter(h=>h.estado==='limpieza').length;
+  el('d4').textContent=D.habs.filter(h=>h.estado==='reservada').length;
+  el('d5').textContent=D.reservas.filter(r=>r.fecha_salida===hoy&&r.estado==='activa').length;
+  el('d6').textContent=D.huespedes.filter(h=>h.etiqueta==='vip').length;
+
+  el('d-tbl').innerHTML=D.reservas.filter(r=>r.estado==='activa'||r.estado==='pendiente').slice(0,6).map(r=>{
+    const h=hab(r.habitacion_id),hu=huesp(r.huesped_id);
+    return`<tr><td class="bold">${hu?.nombre||'—'}</td><td>${h?.numero||'—'}</td><td>${fmt2(r.fecha_salida)}</td><td><span class="badge bv-${r.estado}">${r.estado}</span></td></tr>`;
+  }).join('')||'<tr><td colspan="4" class="muted ta-c" style="padding:16px">Sin reservas activas</td></tr>';
+
+  const segCount={nuevo:0,recurrente:0,vip:0,corporativo:0,mochilero:0,grupo:0};
+  D.huespedes.forEach(h=>segCount[h.etiqueta]=(segCount[h.etiqueta]||0)+1);
+  el('d-pipe').innerHTML=Object.entries(segCount).filter(([,v])=>v>0).map(([k,v])=>`
+    <div class="flex jcb aic" style="padding:6px 0;border-bottom:1px solid var(--border)">
+      <span class="badge bv-${k}">${k}</span>
+      <span class="bold">${v}</span>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════
+   HABITACIONES CRUD
+════════════════════════════════════════════════════ */
+function rHabs(){
+  const q=val('hab-q').toLowerCase(),f=val('hab-f');
+  const list=D.habs.filter(h=>(!q||h.numero.toLowerCase().includes(q)||h.tipo.toLowerCase().includes(q))&&(!f||h.estado===f));
+  el('hab-tbl').innerHTML=list.map(h=>`<tr>
+    <td class="bold mono">${h.numero}</td><td>${h.tipo}</td><td>${h.piso}</td>
+    <td>S/ ${h.precio}</td><td>${h.capacidad||'—'}</td>
+    <td><span class="badge bv-${h.estado}">${h.estado}</span></td>
+    <td><div class="tda"><span class="ico" onclick="editHab(${h.id})">✏️</span><span class="ico" onclick="delHab(${h.id})">🗑️</span></div></td>
+  </tr>`).join('')||noRows(7,'Sin habitaciones');
+}
+function editHab(id){const h=D.habs.find(x=>x.id==id);if(!h)return;setv('mh-id',h.id);setv('mh-num',h.numero);setv('mh-piso',h.piso);setv('mh-tipo',h.tipo);setv('mh-cap',h.capacidad||'');setv('mh-precio',h.precio);setv('mh-est',h.estado);setv('mh-desc',h.descripcion||'');el('mh-title').textContent='Editar habitación';openMod('m-hab');}
+async function saveHab(){
+  const id=val('mh-id'),num=val('mh-num').trim();if(!num){toast('Ingresa el número','er');return;}
+  const o={numero:num,piso:+val('mh-piso'),tipo:val('mh-tipo'),capacidad:+val('mh-cap'),precio:+val('mh-precio'),estado:val('mh-est'),descripcion:val('mh-desc')};
+  if(id){await dbUpd('habitaciones',id,o);toast('Habitación actualizada','ok');}
+  else{await dbIns('habitaciones',o);toast('Habitación creada','ok');}
+  closeMod('m-hab');rHabs();
+}
+async function delHab(id){if(!confirm('¿Eliminar habitación?'))return;await dbDel('habitaciones',id);toast('Eliminada','ok');rHabs();}
+function resetForm(t){
+  if(t==='hab'){['mh-id','mh-num','mh-piso','mh-cap','mh-precio','mh-desc'].forEach(i=>setv(i,''));el('mh-title').textContent='Nueva habitación';}
+  if(t==='huesp'){['mhu-id','mhu-nom','mhu-dni','mhu-tel','mhu-ema','mhu-nac','mhu-fnac','mhu-notas'].forEach(i=>setv(i,''));el('mhu-title').textContent='Nuevo huésped';}
+  if(t==='resena'){['mre-id','mre-autor','mre-txt'].forEach(i=>setv(i,''));setStar(5);setv('mre-fecha',fmt(new Date()));}
+  if(t==='camp'){['mc-id','mc-nom','mc-inv','mc-res','mc-ing'].forEach(i=>setv(i,''));setv('mc-fecha',fmt(new Date()));}
+}
+
+/* ════════════════════════════════════════════════════
+   MAPA
+════════════════════════════════════════════════════ */
+function rMapa(){
+  el('mapa-c').innerHTML=D.habs.map(h=>`
+    <div class="rt ${h.estado}" onclick="tileAct(${h.id})">
+      <div class="rn">${h.numero}</div>
+      <div class="rtp">${h.tipo}</div>
+      <span class="badge bv-${h.estado}">${h.estado}</span>
+      <div class="rpr">S/ ${h.precio}/noche</div>
+    </div>`).join('')||'<p class="muted">Sin habitaciones. Agrégalas en Habitaciones.</p>';
+}
+function tileAct(id){
+  const h=D.habs.find(x=>x.id==id);if(!h)return;
+  if(h.estado==='libre')go('checkin');
+  else if(h.estado==='ocupada')go('checkout');
+  else if(h.estado==='limpieza'){if(confirm(`¿Marcar ${h.numero} como libre?`))updHabEst(id,'libre');}
+  else toast(`Hab. ${h.numero} · ${h.estado}`,'in');
+}
+async function updHabEst(id,est){await dbUpd('habitaciones',id,{estado:est});const i=D.habs.findIndex(x=>x.id==id);if(i>=0)D.habs[i].estado=est;rMapa();toast('Estado actualizado','ok');}
+
+/* ════════════════════════════════════════════════════
+   HUÉSPEDES CRM CRUD
+════════════════════════════════════════════════════ */
+function rHuespedes(){
+  const q=val('hu-q').toLowerCase(),f=val('hu-f');
+  const list=D.huespedes.filter(h=>(!q||h.nombre.toLowerCase().includes(q)||(h.dni||'').includes(q)||(h.telefono||'').includes(q))&&(!f||h.etiqueta===f));
+  el('hu-tbl').innerHTML=list.map(h=>`<tr>
+    <td><span class="bold" style="cursor:pointer;color:var(--accent)" onclick="verPerfil(${h.id})">${h.nombre}</span></td>
+    <td class="mono sm">${h.dni||'—'}</td><td>${h.telefono||'—'}</td>
+    <td><span class="badge bv-${h.etiqueta}">${h.etiqueta}</span></td>
+    <td class="bold">${h.total_estancias||0}</td>
+    <td>S/ ${h.gasto_total||0}</td>
+    <td>${h.canal_frecuente||'—'}</td>
+    <td><div class="tda"><span class="ico" onclick="verPerfil(${h.id})">👁</span><span class="ico" onclick="editHuesp(${h.id})">✏️</span><span class="ico" onclick="delHuesp(${h.id})">🗑️</span></div></td>
+  </tr>`).join('')||noRows(8,'Sin huéspedes');
+}
+
+function editHuesp(id){
+  const h=D.huespedes.find(x=>x.id==id);if(!h)return;
+  setv('mhu-id',h.id);setv('mhu-nom',h.nombre);setv('mhu-dni',h.dni||'');setv('mhu-tel',h.telefono||'');
+  setv('mhu-ema',h.email||'');setv('mhu-nac',h.nacionalidad||'');setv('mhu-fnac',h.fecha_nacimiento||'');
+  setv('mhu-seg',h.etiqueta||'nuevo');setv('mhu-canal',h.canal_frecuente||'');setv('mhu-notas',h.notas_crm||'');
+  el('mhu-title').textContent='Editar huésped';openMod('m-huesp');
+}
+async function saveHuesped(){
+  const id=val('mhu-id'),nom=val('mhu-nom').trim();if(!nom){toast('Ingresa el nombre','er');return;}
+  const o={nombre:nom,dni:val('mhu-dni'),telefono:val('mhu-tel'),email:val('mhu-ema'),nacionalidad:val('mhu-nac'),fecha_nacimiento:val('mhu-fnac')||null,etiqueta:val('mhu-seg'),canal_frecuente:val('mhu-canal'),notas_crm:val('mhu-notas'),created_at:new Date().toISOString()};
+  if(id){await dbUpd('huespedes',id,o);toast('Huésped actualizado','ok');}
+  else{await dbIns('huespedes',o);toast('Huésped registrado','ok');}
+  closeMod('m-huesp');rHuespedes();
+}
+async function delHuesp(id){if(!confirm('¿Eliminar huésped?'))return;await dbDel('huespedes',id);toast('Eliminado','ok');rHuespedes();}
+
+/* ── PERFIL 360° ── */
+function verPerfil(id){
+  const h=D.huespedes.find(x=>x.id==id);if(!h)return;
+  const reservasH=D.reservas.filter(r=>r.huesped_id==id);
+  const habFav=reservasH.length?D.habs.find(x=>x.id==reservasH[0].habitacion_id)?.tipo||'—':'—';
+  const initials=h.nombre.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  el('perfil-c').innerHTML=`
+    <div class="perfil-header">
+      <div class="flex aic g2">
+        <div class="perfil-avatar">${initials}</div>
+        <div>
+          <div style="font-size:18px;font-weight:700">${h.nombre}</div>
+          <div class="flex aic g1 wrap" style="margin-top:4px">
+            <span class="badge bv-${h.etiqueta}">${h.etiqueta}</span>
+            <span class="sm muted">${h.nacionalidad||''}</span>
+            ${h.telefono?`<span class="sm muted">📱 ${h.telefono}</span>`:''}
+            ${h.email?`<span class="sm muted">✉ ${h.email}</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-v">${h.total_estancias||0}</div><div class="kpi-l">Estadías</div></div>
+        <div class="kpi"><div class="kpi-v">S/${h.gasto_total||0}</div><div class="kpi-l">Gasto total</div></div>
+        <div class="kpi"><div class="kpi-v">${habFav}</div><div class="kpi-l">Hab. favorita</div></div>
+        <div class="kpi"><div class="kpi-v">${h.canal_frecuente||'—'}</div><div class="kpi-l">Canal top</div></div>
+      </div>
+      ${h.notas_crm?`<div style="margin-top:12px;padding:10px 12px;background:var(--bg4);border-radius:var(--r);font-size:13px;color:var(--muted2)">📝 ${h.notas_crm}</div>`:''}
+    </div>
+    <div class="card">
+      <div class="ct">Historial de reservas</div>
+      <div class="tw"><table>
+        <thead><tr><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Canal</th><th>Total</th><th>Estado</th></tr></thead>
+        <tbody>${reservasH.map(r=>{const hb=hab(r.habitacion_id);return`<tr>
+          <td>${hb?.numero||'—'} · ${hb?.tipo||''}</td>
+          <td>${fmt2(r.fecha_entrada)}</td><td>${fmt2(r.fecha_salida)}</td>
+          <td><span class="badge bv-reservada">${r.origen}</span></td>
+          <td>S/ ${r.total}</td>
+          <td><span class="badge bv-${r.estado}">${r.estado}</span></td>
+        </tr>`;}).join('')||noRows(6,'Sin reservas')}</tbody>
+      </table></div>
+    </div>`;
+  go('perfil');
+}
+
+/* ════════════════════════════════════════════════════
+   FIDELIZACIÓN
+════════════════════════════════════════════════════ */
+function rFidelizacion(){
+  const segs=['nuevo','recurrente','vip'];
+  const labels={nuevo:'🆕 Nuevo',recurrente:'🔁 Recurrente',vip:'👑 VIP'};
+  el('pipe-c').innerHTML=segs.map(seg=>{
+    const list=D.huespedes.filter(h=>h.etiqueta===seg);
+    return`<div class="pipe-col">
+      <div class="pipe-title">${labels[seg]} <span class="badge bv-${seg}">${list.length}</span></div>
+      ${list.map(h=>`
+        <div class="pipe-card" onclick="verPerfil(${h.id})">
+          <div class="bold">${h.nombre}</div>
+          <div class="sm muted">${h.total_estancias||0} estadías · S/${h.gasto_total||0}</div>
+          <div class="sm muted">${h.canal_frecuente||'sin canal'}</div>
+        </div>`).join('')||'<p class="sm muted ta-c" style="padding:10px">Sin huéspedes</p>'}
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════
+   RESEÑAS + IA
+════════════════════════════════════════════════════ */
+function rResenas(){
+  const avg=D.resenas.length?(D.resenas.reduce((s,r)=>s+r.puntuacion,0)/D.resenas.length).toFixed(1):0;
+  el('res-avg').textContent=avg+' ★';
+  el('res-tot').textContent=D.resenas.length;
+  el('res-pen').textContent=D.resenas.filter(r=>!r.respondida).length;
+
+  el('res-lista').innerHTML=D.resenas.map(r=>`
+    <div class="card card-sm">
+      <div class="flex jcb aic wrap g1" style="margin-bottom:10px">
+        <div class="flex aic g2">
+          <span class="badge bv-reservada">${r.plataforma}</span>
+          <span class="bold">${r.autor}</span>
+          <span style="color:var(--yellow)">${'★'.repeat(r.puntuacion)}${'☆'.repeat(5-r.puntuacion)}</span>
+        </div>
+        <div class="flex aic g1">
+          <span class="sm muted">${fmt2(r.fecha)}</span>
+          ${r.respondida?'<span class="badge bv-activa">Respondida</span>':'<span class="badge bv-pendiente">Pendiente</span>'}
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:10px;font-style:italic">"${r.texto}"</p>
+      ${r.respondida&&r.respuesta?`<div style="background:var(--bg4);border-left:3px solid var(--green);padding:10px 12px;border-radius:0 var(--r) var(--r) 0;font-size:13px">${r.respuesta}</div>`:''}
+      ${!r.respondida?`
+        <div id="ia-${r.id}" class="ia-output" style="margin-bottom:8px">La respuesta de IA aparecerá aquí…</div>
+        <div class="flex g1 wrap">
+          <button class="btn btn-v btn-sm" onclick="genRespuesta(${r.id})">✨ Generar respuesta con IA</button>
+          <button class="btn btn-g btn-sm" onclick="marcarRespondida(${r.id})">✓ Marcar respondida</button>
+          <button class="btn btn-o btn-sm" onclick="copiarRespuesta(${r.id})">📋 Copiar</button>
+        </div>`:''}
+    </div>`).join('')||'<div class="card"><p class="muted ta-c" style="padding:20px">Sin reseñas registradas</p></div>';
+}
+
+async function genRespuesta(id){
+  const r=D.resenas.find(x=>x.id==id);if(!r)return;
+  const out=el('ia-'+id);
+  out.textContent='⟳ Generando respuesta con IA…';out.classList.remove('loaded');
+
+  if(CFG.CLAUDE_KEY==='PEGA_AQUI_TU_ANTHROPIC_API_KEY'){
+    // Respuesta demo sin API key real
+    await sleep(1200);
+    const demos={5:'Muchísimas gracias por tu maravillosa reseña. Es un honor para todo nuestro equipo recibir este reconocimiento. Esperamos verte pronto.',3:'Agradecemos mucho tu visita y tus comentarios. Lamentamos el inconveniente con el agua caliente — ya lo hemos corregido. Esperamos darte una experiencia aún mejor en tu próxima visita.',4:'Gracias por tu calificación y por destacar la amabilidad de nuestro equipo. Seguimos trabajando para mejorar cada día. Bienvenido de regreso cuando gustes.'};
+    const resp=demos[r.puntuacion]||'Gracias por tu visita y tus comentarios. Nos alegra que hayas elegido nuestro hostal.';
+    out.textContent=resp;out.classList.add('loaded');
+    await dbUpd('resenas',id,{respuesta:resp});
+    const i=D.resenas.findIndex(x=>x.id==id);if(i>=0)D.resenas[i].respuesta=resp;
+    return;
+  }
+
+  // IA REAL con Claude API
+  try{
+    const sentiment=r.puntuacion>=4?'positiva':r.puntuacion===3?'neutral':'negativa';
+    const prompt=`Eres el gerente de ${CFG.HOSTAL_NAME}, un hostal en Perú. Un huésped dejó la siguiente reseña ${sentiment} (${r.puntuacion}/5 estrellas) en ${r.plataforma}:\n\n"${r.texto}"\n\nEscribe una respuesta profesional, cálida y en español peruano. Si es positiva, agradece y refuerza. Si es negativa, pide disculpas con empatía y muestra solución. Máximo 3 oraciones. Sin saludos formales al inicio.`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CFG.CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+    });
+    const json=await res.json();
+    const resp=json.content?.[0]?.text||'No se pudo generar respuesta.';
+    out.textContent=resp;out.classList.add('loaded');
+    await dbUpd('resenas',id,{respuesta:resp});
+    const i=D.resenas.findIndex(x=>x.id==id);if(i>=0)D.resenas[i].respuesta=resp;
+  }catch(e){out.textContent='Error al conectar con IA. Revisa tu API key.';toast('Error IA: '+e.message,'er');}
+}
+
+async function marcarRespondida(id){
+  await dbUpd('resenas',id,{respondida:true});
+  const i=D.resenas.findIndex(x=>x.id==id);if(i>=0)D.resenas[i].respondida=true;
+  toast('Reseña marcada como respondida','ok');rResenas();
+}
+function copiarRespuesta(id){
+  const r=D.resenas.find(x=>x.id==id);
+  if(r?.respuesta){navigator.clipboard.writeText(r.respuesta);toast('Respuesta copiada al portapapeles','ok');}
+  else{const t=el('ia-'+id);if(t)navigator.clipboard.writeText(t.textContent);toast('Copiado','ok');}
+}
+function setStar(n){
+  setv('mre-pts',n);
+  el('stars-input').querySelectorAll('span').forEach((s,i)=>s.textContent=i<n?'★':'☆');
+}
+async function saveResena(){
+  const txt=val('mre-txt').trim();if(!txt){toast('Ingresa el texto de la reseña','er');return;}
+  const o={plataforma:val('mre-plat'),autor:val('mre-autor')||'Anónimo',puntuacion:+val('mre-pts')||5,texto:txt,respondida:false,fecha:val('mre-fecha')||fmt(new Date()),respuesta:''};
+  await dbIns('resenas',o);toast('Reseña guardada','ok');closeMod('m-resena');rResenas();
+}
+
+/* ════════════════════════════════════════════════════
+   COMUNICACIONES CRM + IA
+════════════════════════════════════════════════════ */
+function rComunicaciones(){
+  fillSel('mco-hu',D.huespedes,h=>({v:h.id,l:h.nombre}));
+  el('comu-tbl').innerHTML=D.comunicaciones.map(c=>{
+    const hu=huesp(c.huesped_id);
+    return`<tr>
+      <td class="bold">${hu?.nombre||'—'}</td>
+      <td>${c.tipo}</td><td>${c.canal}</td>
+      <td class="sm muted">${fmt2(c.created_at)}</td>
+      <td>${c.enviado?'<span class="badge bv-activa">Enviado</span>':'<span class="badge bv-pendiente">Pendiente</span>'}</td>
+      <td><span class="ico" onclick="delComu(${c.id})">🗑️</span></td>
+    </tr>`;
+  }).join('')||noRows(6,'Sin comunicaciones');
+}
+
+async function genPlantilla(tipo){
+  const out=el('plantilla-out');
+  out.textContent='⟳ Generando con IA…';out.classList.remove('loaded');
+  const hostal=CFG.HOSTAL_NAME;
+
+  if(CFG.CLAUDE_KEY==='PEGA_AQUI_TU_ANTHROPIC_API_KEY'){
+    await sleep(1000);
+    const demos={
+      bienvenida:`Hola [nombre], bienvenido/a a ${hostal} 🏨 Tu habitación [número] está lista. WiFi: hostal2025. Cualquier cosa, estamos en recepción. ¡Que disfrutes tu estadía!`,
+      post_checkout:`Hola [nombre], gracias por hospedarte en ${hostal} 🙏 Fue un gusto tenerte. Si puedes dejarnos una reseña en Google, nos ayudaría mucho: [enlace]. ¡Te esperamos pronto!`,
+      oferta:`Hola [nombre] 🎁 Tenemos una promoción especial este fin de semana en ${hostal}: 2 noches al precio de 1. Solo para clientes frecuentes como tú. Reserva respondiendo este mensaje.`,
+      retención:`Hola [nombre] 👑 Te extrañamos en ${hostal}. Como cliente VIP, tienes 15% de descuento en tu próxima estadía. La oferta es válida hasta fin de mes. ¡Esperamos verte pronto!`
+    };
+    out.textContent=demos[tipo]||'Plantilla generada.';out.classList.add('loaded');return;
+  }
+
+  try{
+    const prompts={
+      bienvenida:`Crea un mensaje de bienvenida de WhatsApp para un huésped recién llegado a ${hostal}. Incluye marcadores [nombre] y [número de habitación]. Cálido, breve, emoji apropiado. En español peruano.`,
+      post_checkout:`Crea un mensaje de WhatsApp post check-out para ${hostal} pidiendo una reseña en Google. Incluye marcador [nombre]. Agradecido, breve, sin presionar. En español peruano.`,
+      oferta:`Crea un mensaje de WhatsApp con oferta especial de fin de semana para ${hostal}. Incluye marcador [nombre]. Atractivo, urgente pero no agresivo. En español peruano.`,
+      retención:`Crea un mensaje de WhatsApp de retención para cliente VIP de ${hostal} que lleva tiempo sin volver. Incluye marcador [nombre] y un beneficio exclusivo. En español peruano.`
+    };
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CFG.CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompts[tipo]}]})
+    });
+    const json=await res.json();
+    out.textContent=json.content?.[0]?.text||'No se pudo generar.';out.classList.add('loaded');
+  }catch(e){out.textContent='Error al conectar con IA.';toast('Error: '+e.message,'er');}
+}
+
+async function saveComu(){
+  const hid=val('mco-hu'),msg=val('mco-msg').trim();
+  if(!hid||!msg){toast('Selecciona huésped y escribe el mensaje','er');return;}
+  const o={huesped_id:+hid,tipo:val('mco-tipo'),canal:val('mco-canal'),mensaje:msg,enviado:false,created_at:new Date().toISOString()};
+  await dbIns('comunicaciones',o);toast('Comunicación registrada','ok');closeMod('m-comu');rComunicaciones();
+}
+async function delComu(id){if(!confirm('¿Eliminar?'))return;await dbDel('comunicaciones',id);toast('Eliminada','ok');rComunicaciones();}
+
+/* ════════════════════════════════════════════════════
+   CAMPAÑAS CRUD
+════════════════════════════════════════════════════ */
+function rCampanas(){
+  const inv=D.campanas.reduce((s,c)=>s+Number(c.inversion||0),0);
+  const res=D.campanas.reduce((s,c)=>s+Number(c.reservas||0),0);
+  const ing=D.campanas.reduce((s,c)=>s+Number(c.ingresos||0),0);
+  const roi=inv>0?Math.round(((ing-inv)/inv)*100):0;
+  el('c-inv').textContent=`S/${inv.toLocaleString()}`;el('c-res').textContent=res;
+  el('c-ing').textContent=`S/${ing.toLocaleString()}`;el('c-roi').textContent=roi+'%';
+  el('camp-tbl').innerHTML=D.campanas.map(c=>{
+    const r=c.inversion>0?Math.round(((c.ingresos-c.inversion)/c.inversion)*100):0;
+    return`<tr>
+      <td class="bold">${c.nombre}</td>
+      <td><span class="badge bv-reservada">${c.canal}</span></td>
+      <td>S/${c.inversion}</td><td>${c.reservas}</td><td>S/${c.ingresos}</td>
+      <td style="font-weight:600;color:${r>=0?'var(--green)':'var(--red)'}">${r}%</td>
+      <td class="sm muted">${fmt2(c.fecha)}</td>
+      <td><div class="tda"><span class="ico" onclick="editCamp(${c.id})">✏️</span><span class="ico" onclick="delCamp(${c.id})">🗑️</span></div></td>
+    </tr>`;
+  }).join('')||noRows(8,'Sin campañas');
+}
+function editCamp(id){const c=D.campanas.find(x=>x.id==id);if(!c)return;setv('mc-id',c.id);setv('mc-nom',c.nombre);setv('mc-canal',c.canal);setv('mc-fecha',c.fecha);setv('mc-inv',c.inversion);setv('mc-res',c.reservas);setv('mc-ing',c.ingresos);openMod('m-camp');}
+async function saveCamp(){
+  const id=val('mc-id'),nom=val('mc-nom').trim();if(!nom){toast('Ingresa el nombre','er');return;}
+  const o={nombre:nom,canal:val('mc-canal'),fecha:val('mc-fecha'),inversion:+val('mc-inv')||0,reservas:+val('mc-res')||0,ingresos:+val('mc-ing')||0};
+  if(id){await dbUpd('campanas',id,o);toast('Campaña actualizada','ok');}else{await dbIns('campanas',o);toast('Campaña guardada','ok');}
+  closeMod('m-camp');rCampanas();
+}
+async function delCamp(id){if(!confirm('¿Eliminar campaña?'))return;await dbDel('campanas',id);toast('Eliminada','ok');rCampanas();}
+
+/* ════════════════════════════════════════════════════
+   CHECK-IN
+════════════════════════════════════════════════════ */
+function setupCI(){
+  fillSel('ci-hab',D.habs.filter(h=>h.estado==='libre'),h=>({v:h.id,l:`${h.numero} · ${h.tipo} · S/${h.precio}`}));
+  const m=new Date();m.setDate(m.getDate()+1);
+  el('ci-sal').min=fmt(m);setv('ci-sal',fmt(m));
+}
+async function doCheckin(){
+  const nom=val('ci-nom').trim(),dni=val('ci-dni').trim();
+  const tel=val('ci-tel'),ema=val('ci-ema');
+  const habid=val('ci-hab'),salida=val('ci-sal'),origen=val('ci-ori');
+  if(!nom||!habid||!salida){toast('Nombre, habitación y fecha de salida son obligatorios','er');return;}
+
+  let hid;
+  const ex=D.huespedes.find(x=>x.dni===dni&&dni);
+  if(ex){
+    hid=ex.id;
+    // Actualizar CRM: sumar estadía
+    const ne=ex.total_estancias+1;
+    const newSeg=ne>=5?'vip':ne>=2?'recurrente':'nuevo';
+    await dbUpd('huespedes',ex.id,{total_estancias:ne,etiqueta:newSeg,canal_frecuente:origen});
+    const i=D.huespedes.findIndex(x=>x.id==ex.id);
+    if(i>=0){D.huespedes[i].total_estancias=ne;D.huespedes[i].etiqueta=newSeg;}
+  }else{
+    const nh=await dbIns('huespedes',{nombre:nom,dni,telefono:tel,email:ema,etiqueta:'nuevo',total_estancias:1,gasto_total:0,canal_frecuente:origen,created_at:new Date().toISOString()});
+    if(!nh)return;hid=nh.id;D.huespedes.unshift(nh);
+  }
+
+  const hb=D.habs.find(x=>x.id==habid);
+  const hoy=fmt(new Date());
+  const noches=Math.max(1,Math.round((new Date(salida)-new Date(hoy))/86400000));
+  const total=(hb?.precio||0)*noches;
+
+  const nr=await dbIns('reservas',{huesped_id:hid,habitacion_id:+habid,fecha_entrada:hoy,fecha_salida:salida,origen,total,estado:'activa'});
+  if(!nr)return;
+  D.reservas.unshift(nr);
+  await dbUpd('habitaciones',+habid,{estado:'ocupada'});
+  const hi=D.habs.findIndex(x=>x.id==habid);if(hi>=0)D.habs[hi].estado='ocupada';
+
+  toast(`✓ Check-in ${nom} · Hab.${hb?.numero} · ${noches} noche(s) · S/${total}`,'ok');
+  ['ci-nom','ci-dni','ci-tel','ci-ema','ci-not'].forEach(i=>setv(i,''));
+  setupCI();
+}
+
+/* ════════════════════════════════════════════════════
+   CHECK-OUT
+════════════════════════════════════════════════════ */
+function rCheckout(){
+  const activas=D.reservas.filter(r=>r.estado==='activa');
+  el('co-tbl').innerHTML=activas.map(r=>{
+    const hb=hab(r.habitacion_id),hu=huesp(r.huesped_id);
+    const noches=Math.max(1,Math.round((new Date(r.fecha_salida)-new Date(r.fecha_entrada))/86400000));
+    return`<tr>
+      <td class="bold">${hu?.nombre||'—'}</td>
+      <td><span class="badge bv-${hu?.etiqueta||'nuevo'}">${hu?.etiqueta||'—'}</span></td>
+      <td>${hb?.numero||'—'} · ${hb?.tipo||''}</td>
+      <td>${fmt2(r.fecha_entrada)}</td><td>${fmt2(r.fecha_salida)}</td>
+      <td>${noches}</td><td class="bold">S/${r.total||0}</td>
+      <td><button class="btn btn-g btn-sm" onclick="doCheckout(${r.id})">↗ Check-out</button></td>
+    </tr>`;
+  }).join('')||noRows(8,'Sin huéspedes activos');
+}
+async function doCheckout(id){
+  const r=D.reservas.find(x=>x.id==id);if(!r)return;
+  const hu=huesp(r.huesped_id);
+  if(!confirm(`¿Confirmar check-out de ${hu?.nombre||'este huésped'}?`))return;
+  await dbUpd('reservas',id,{estado:'checkout'});
+  await dbUpd('habitaciones',r.habitacion_id,{estado:'limpieza'});
+  // CRM: actualizar gasto total
+  if(hu){
+    const ng=Number(hu.gasto_total||0)+Number(r.total||0);
+    await dbUpd('huespedes',hu.id,{gasto_total:ng});
+    const i=D.huespedes.findIndex(x=>x.id==hu.id);if(i>=0)D.huespedes[i].gasto_total=ng;
+  }
+  const ri=D.reservas.findIndex(x=>x.id==id);if(ri>=0)D.reservas[ri].estado='checkout';
+  const hi=D.habs.findIndex(x=>x.id==r.habitacion_id);if(hi>=0)D.habs[hi].estado='limpieza';
+  toast('Check-out completado · Habitación pasa a limpieza','ok');rCheckout();
+}
+
+/* ════════════════════════════════════════════════════
+   RESERVAS CRUD
+════════════════════════════════════════════════════ */
+function rReservas(){
+  const q=val('res-q').toLowerCase(),f=val('res-f');
+  const list=D.reservas.filter(r=>{const hu=huesp(r.huesped_id);return(!q||(hu?.nombre||'').toLowerCase().includes(q))&&(!f||r.estado===f);});
+  el('res-tbl').innerHTML=list.map(r=>{
+    const hb=hab(r.habitacion_id),hu=huesp(r.huesped_id);
+    return`<tr>
+      <td class="bold">${hu?.nombre||'—'}</td>
+      <td>${hb?.numero||'—'} · ${hb?.tipo||''}</td>
+      <td>${fmt2(r.fecha_entrada)}</td><td>${fmt2(r.fecha_salida)}</td>
+      <td><span class="badge bv-reservada">${r.origen||'—'}</span></td>
+      <td class="bold">S/${r.total||0}</td>
+      <td><span class="badge bv-${r.estado}">${r.estado}</span></td>
+      <td><div class="tda">
+        <span class="ico" onclick="editRes(${r.id})">✏️</span>
+        <span class="ico" onclick="cancelRes(${r.id})">✕</span>
+      </div></td>
+    </tr>`;
+  }).join('')||noRows(8,'Sin reservas');
+}
+function openModalReserva(){
+  fillSel('mres-hu',D.huespedes,h=>({v:h.id,l:h.nombre}));
+  fillSel('mres-hab',D.habs.filter(h=>h.estado==='libre'),h=>({v:h.id,l:`${h.numero} · ${h.tipo} · S/${h.precio}`}));
+  const hoy=fmt(new Date());setv('mres-ent',hoy);
+  const m=new Date();m.setDate(m.getDate()+1);setv('mres-sal',fmt(m));
+  setv('mres-id','');el('mres-title').textContent='Nueva reserva';
+  openMod('m-reserva');
+}
+function editRes(id){
+  const r=D.reservas.find(x=>x.id==id);if(!r)return;
+  fillSel('mres-hu',D.huespedes,h=>({v:h.id,l:h.nombre}));
+  fillSel('mres-hab',D.habs,h=>({v:h.id,l:`${h.numero} · ${h.tipo}`}));
+  setv('mres-id',r.id);setv('mres-hu',r.huesped_id);setv('mres-hab',r.habitacion_id);
+  setv('mres-ent',r.fecha_entrada);setv('mres-sal',r.fecha_salida);
+  setv('mres-ori',r.origen||'directo');setv('mres-tot',r.total||'');setv('mres-est',r.estado);
+  el('mres-title').textContent='Editar reserva';openMod('m-reserva');
+}
+async function saveReserva(){
+  const id=val('mres-id'),hid=val('mres-hu'),habid=val('mres-hab');
+  const ent=val('mres-ent'),sal=val('mres-sal');
+  if(!hid||!habid||!ent||!sal){toast('Completa todos los campos requeridos','er');return;}
+  const hb=D.habs.find(x=>x.id==habid);
+  const noches=Math.max(1,Math.round((new Date(sal)-new Date(ent))/86400000));
+  const total=val('mres-tot')||((hb?.precio||0)*noches);
+  const o={huesped_id:+hid,habitacion_id:+habid,fecha_entrada:ent,fecha_salida:sal,origen:val('mres-ori'),total:+total,estado:val('mres-est')};
+  if(id){await dbUpd('reservas',id,o);toast('Reserva actualizada','ok');}
+  else{const nr=await dbIns('reservas',o);if(nr){D.reservas.unshift(nr);toast('Reserva creada','ok');}}
+  if(o.estado==='activa')await dbUpd('habitaciones',+habid,{estado:'ocupada'});
+  closeMod('m-reserva');rReservas();
+}
+async function cancelRes(id){
+  if(!confirm('¿Cancelar esta reserva?'))return;
+  const r=D.reservas.find(x=>x.id==id);
+  await dbUpd('reservas',id,{estado:'cancelada'});
+  const ri=D.reservas.findIndex(x=>x.id==id);if(ri>=0)D.reservas[ri].estado='cancelada';
+  if(r)await dbUpd('habitaciones',r.habitacion_id,{estado:'libre'});
+  const hi=D.habs.findIndex(x=>x.id==r?.habitacion_id);if(hi>=0)D.habs[hi].estado='libre';
+  toast('Reserva cancelada','ok');rReservas();
+}
+
+/* ════════════════════════════════════════════════════
+   COLA LIMPIEZA
+════════════════════════════════════════════════════ */
+function rCola(){
+  const list=D.habs.filter(h=>h.estado==='limpieza'||h.estado==='libre');
+  el('cola-c').innerHTML=list.map(h=>`
+    <div class="card card-xs flex aic jcb">
+      <div class="flex aic g2">
+        <span class="bold">Hab. ${h.numero}</span>
+        <span class="sm muted">${h.tipo} · Piso ${h.piso}</span>
+        <span class="badge bv-${h.estado}">${h.estado}</span>
+      </div>
+      ${h.estado==='limpieza'?`<button class="btn btn-g btn-sm" onclick="marcarLimpia(${h.id})">✓ Lista</button>`:'<span class="sm muted">Libre</span>'}
+    </div>`).join('')||'<div class="card"><p class="muted ta-c" style="padding:20px">🎉 Sin cuartos pendientes</p></div>';
+}
+async function marcarLimpia(id){
+  await dbUpd('habitaciones',id,{estado:'libre'});
+  const i=D.habs.findIndex(x=>x.id==id);if(i>=0)D.habs[i].estado='libre';
+  toast('Habitación lista','ok');rCola();
+}
+
+/* ════════════════════════════════════════════════════
+   INCIDENCIAS CRUD
+════════════════════════════════════════════════════ */
+function rIncidencias(){
+  el('inci-tbl').innerHTML=D.incidencias.map(i=>{
+    const hb=hab(i.habitacion_id);
+    return`<tr>
+      <td class="bold">${hb?.numero||'—'}</td>
+      <td>${i.descripcion}</td>
+      <td class="bv-${i.prioridad} bold">${i.prioridad.toUpperCase()}</td>
+      <td><span class="badge bv-${i.estado==='resuelta'?'activa':'ocupada'}">${i.estado}</span></td>
+      <td class="sm muted">${fmt2(i.created_at)}</td>
+      <td><div class="tda">
+        ${i.estado!=='resuelta'?`<button class="btn btn-g btn-xs" onclick="resolverInci(${i.id})">✓</button>`:''}
+        <span class="ico" onclick="delInci(${i.id})">🗑️</span>
+      </div></td>
+    </tr>`;
+  }).join('')||noRows(6,'Sin incidencias');
+}
+async function saveInci(){
+  const habid=val('mi-hab'),desc=val('mi-desc').trim();
+  if(!habid||!desc){toast('Selecciona habitación y describe el problema','er');return;}
+  const o={habitacion_id:+habid,descripcion:desc,prioridad:val('mi-pri'),estado:'pendiente',created_at:new Date().toISOString()};
+  await dbIns('incidencias',o);toast('Incidencia reportada','ok');closeMod('m-inci');rIncidencias();
+}
+async function resolverInci(id){
+  await dbUpd('incidencias',id,{estado:'resuelta'});
+  const i=D.incidencias.findIndex(x=>x.id==id);if(i>=0)D.incidencias[i].estado='resuelta';
+  toast('Incidencia resuelta','ok');rIncidencias();
+}
+async function delInci(id){if(!confirm('¿Eliminar?'))return;await dbDel('incidencias',id);toast('Eliminada','ok');rIncidencias();}
+
+/* ════════════════════════════════════════════════════
+   CHECKLIST 3★
+════════════════════════════════════════════════════ */
+const CL=[
+  {cat:'Infraestructura',items:['Habitaciones mínimo 8m² (simple) y 12m² (doble)','Baño privado en todas las habitaciones','Agua caliente las 24 horas','Ventilación natural o climatización','Señalización de emergencia y salidas','Extintor por piso'].map(t=>({t,done:false}))},
+  {cat:'Servicio al huésped',items:['Recepción atendida mínimo 12 horas al día','Limpieza diaria de habitaciones','Cambio de lencería cada 3 días o al cambio de huésped','Caja de seguridad en recepción','Wi-Fi en todas las habitaciones','Oferta de desayuno'].map(t=>({t,done:false}))},
+  {cat:'Documentación legal',items:['Registro en MINCETUR vigente','Licencia de funcionamiento vigente','Certificado INDECI vigente','Libro de reclamaciones visible','TUPA canceladas y al día'].map(t=>({t,done:false}))},
+  {cat:'Equipamiento mínimo',items:['Televisor en habitación','Mesa y silla de trabajo','Espejo de cuerpo entero','Amenities básicos (jabón, shampoo, papel)','Perchero o armario en cada habitación'].map(t=>({t,done:false}))},
+];
+function rChecklist(){
+  let tot=0,done=0;
+  CL.forEach(c=>{tot+=c.items.length;done+=c.items.filter(i=>i.done).length;});
+  const pct=Math.round((done/tot)*100);
+  el('cl-pct').textContent=pct+'%';
+  el('cl-pct').style.color=pct>=80?'var(--green)':'var(--accent)';
+  el('cl-bar').style.width=pct+'%';el('cl-bar').style.background=pct>=80?'var(--green)':'var(--accent)';
+  el('cl-sub').textContent=`${done} de ${tot} requisitos${pct>=100?' · ¡Listo para solicitar la categorización!':''}`;
+  el('cl-c').innerHTML=CL.map((cat,ci)=>{
+    const ch=cat.items.filter(i=>i.done).length;
+    const cp=Math.round((ch/cat.items.length)*100);
+    return`<div class="card">
+      <div class="flex jcb aic" style="margin-bottom:8px">
+        <div class="ct" style="margin:0">${cat.cat}</div>
+        <span class="sm muted">${ch}/${cat.items.length} · ${cp}%</span>
+      </div>
+      <div class="pb"><div class="pf" style="width:${cp}%;background:${cp===100?'var(--green)':'var(--accent)'}"></div></div>
+      <div style="margin-top:10px">${cat.items.map((item,ii)=>`
+        <label class="cl-item${item.done?' done':''}">
+          <input type="checkbox" ${item.done?'checked':''} onchange="toggleCL(${ci},${ii},this.checked)" style="width:auto;cursor:pointer;accent-color:var(--accent)"/>
+          <span>${item.t}</span>
+        </label>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function toggleCL(ci,ii,v){CL[ci].items[ii].done=v;rChecklist();}
+
+/* ════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════ */
+const el=id=>document.getElementById(id);
+const val=id=>el(id)?.value||'';
+const setv=(id,v)=>{if(el(id))el(id).value=v};
+const show=id=>el(id)?.classList.remove('hidden');
+const hide=id=>el(id)?.classList.add('hidden');
+const showErr=(id,m)=>{el(id).textContent=m;show(id)};
+const noop=()=>{};
+const fmt=d=>d instanceof Date?d.toISOString().split('T')[0]:d;
+const fmt2=s=>{if(!s)return'—';const[y,m,d]=(s.includes('T')?s.split('T')[0]:s).split('-');return`${d}/${m}/${y}`};
+const hab=id=>D.habs.find(x=>x.id==id);
+const huesp=id=>D.huespedes.find(x=>x.id==id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const noRows=(cols,msg)=>`<tr><td colspan="${cols}" class="muted ta-c" style="padding:20px">${msg}</td></tr>`;
+
+function openMod(id){show(id)}
+function closeMod(id){hide(id)}
+
+function fillSel(id,items,mapFn,ph='Seleccionar…'){
+  const s=el(id);if(!s)return;
+  s.innerHTML=`<option value="">${ph}</option>`+items.map(i=>{const{v,l}=mapFn(i);return`<option value="${v}">${l}</option>`}).join('');
+}
+
+let _tt;
+function toast(msg,type='in'){
+  const t=el('toast');t.textContent=msg;t.className=type+' show';
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
