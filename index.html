@@ -369,7 +369,26 @@
       <div class="field"><label>Estado</label>
         <select id="mh-est"><option value="libre">Libre</option><option value="ocupada">Ocupada</option><option value="limpieza">Limpieza</option><option value="reservada">Reservada</option><option value="mantenimiento">Mantenimiento</option></select>
       </div>
-      <div class="field"><label>Comodidades</label><input id="mh-desc" placeholder="TV, WiFi, baño privado…"/></div>
+      <div class="field">
+        <label>Comodidades</label>
+        <input type="hidden" id="mh-desc"/>
+        <details id="mh-amenities" class="multi-select">
+          <summary id="mh-amenities-summary">Seleccionar comodidades</summary>
+          <div class="multi-options">
+            <label><input type="checkbox" value="TV"/> TV</label>
+            <label><input type="checkbox" value="WiFi"/> WiFi</label>
+            <label><input type="checkbox" value="Baño privado"/> Baño privado</label>
+            <label><input type="checkbox" value="Agua caliente"/> Agua caliente</label>
+            <label><input type="checkbox" value="Aire acondicionado"/> Aire acondicionado</label>
+            <label><input type="checkbox" value="Ventilador"/> Ventilador</label>
+            <label><input type="checkbox" value="Minibar"/> Minibar</label>
+            <label><input type="checkbox" value="Escritorio"/> Escritorio</label>
+            <label><input type="checkbox" value="Caja fuerte"/> Caja fuerte</label>
+            <label><input type="checkbox" value="Jacuzzi"/> Jacuzzi</label>
+            <button type="button" class="multi-done" onclick="closeAmenities()">Listo</button>
+          </div>
+        </details>
+      </div>
     </div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-hab')">Cancelar</button>

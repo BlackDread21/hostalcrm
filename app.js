@@ -73,6 +73,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   document.querySelectorAll('.ni[data-p]').forEach(n=>n.addEventListener('click',()=>go(n.dataset.p)));
   document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeMod(o.id)}));
+  document.querySelectorAll('#mh-amenities input[type="checkbox"]').forEach(c=>c.addEventListener('change',syncAmenities));
+  document.addEventListener('click',e=>{
+    const menu=el('mh-amenities');
+    if(menu?.open && !menu.contains(e.target))closeAmenities();
+  });
 
   el('btn-nueva-reserva').onclick=openModalReserva;
   el('btn-nueva-inci').onclick=()=>{ fillSel('mi-hab',D.habs,h=>({v:h.id,l:`${h.numero} · ${h.tipo}`})); openMod('m-inci'); };
@@ -206,9 +211,10 @@ function rHabs(){
     <td><div class="tda"><span class="ico" onclick="editHab(${h.id})">✏️</span><span class="ico" onclick="delHab(${h.id})">🗑️</span></div></td>
   </tr>`).join('')||noRows(7,'Sin habitaciones');
 }
-function editHab(id){const h=D.habs.find(x=>x.id==id);if(!h)return;setv('mh-id',h.id);setv('mh-num',h.numero);setv('mh-piso',h.piso);setv('mh-tipo',h.tipo);setv('mh-cap',h.capacidad||'');setv('mh-precio',h.precio);setv('mh-est',h.estado);setv('mh-desc',h.descripcion||'');el('mh-title').textContent='Editar habitación';openMod('m-hab');}
+function editHab(id){const h=D.habs.find(x=>x.id==id);if(!h)return;setv('mh-id',h.id);setv('mh-num',h.numero);setv('mh-piso',h.piso);setv('mh-tipo',h.tipo);setv('mh-cap',h.capacidad||'');setv('mh-precio',h.precio);setv('mh-est',h.estado);setAmenities(h.descripcion||'');el('mh-title').textContent='Editar habitación';openMod('m-hab');}
 async function saveHab(){
   const id=val('mh-id'),num=val('mh-num').trim();if(!num){toast('Ingresa el número','er');return;}
+  syncAmenities();
   const o={numero:num,piso:+val('mh-piso'),tipo:val('mh-tipo'),capacidad:+val('mh-cap'),precio:+val('mh-precio'),estado:val('mh-est'),descripcion:val('mh-desc')};
   if(id){await dbUpd('habitaciones',id,o);toast('Habitación actualizada','ok');}
   else{await dbIns('habitaciones',o);toast('Habitación creada','ok');}
@@ -216,7 +222,7 @@ async function saveHab(){
 }
 async function delHab(id){if(!confirm('¿Eliminar habitación?'))return;await dbDel('habitaciones',id);toast('Eliminada','ok');rHabs();}
 function resetForm(t){
-  if(t==='hab'){['mh-id','mh-num','mh-piso','mh-cap','mh-precio','mh-desc'].forEach(i=>setv(i,''));el('mh-title').textContent='Nueva habitación';}
+  if(t==='hab'){['mh-id','mh-num','mh-piso','mh-cap','mh-precio'].forEach(i=>setv(i,''));setAmenities('');el('mh-title').textContent='Nueva habitación';}
   if(t==='huesp'){['mhu-id','mhu-nom','mhu-dni','mhu-tel','mhu-ema','mhu-nac','mhu-fnac','mhu-notas'].forEach(i=>setv(i,''));el('mhu-title').textContent='Nuevo huésped';}
   if(t==='resena'){['mre-id','mre-autor','mre-txt'].forEach(i=>setv(i,''));setStar(5);setv('mre-fecha',fmt(new Date()));}
   if(t==='camp'){['mc-id','mc-nom','mc-inv','mc-res','mc-ing'].forEach(i=>setv(i,''));setv('mc-fecha',fmt(new Date()));}
@@ -769,6 +775,31 @@ function closeMod(id){hide(id)}
 function fillSel(id,items,mapFn,ph='Seleccionar…'){
   const s=el(id);if(!s)return;
   s.innerHTML=`<option value="">${ph}</option>`+items.map(i=>{const{v,l}=mapFn(i);return`<option value="${v}">${l}</option>`}).join('');
+}
+
+function selectedAmenities(){
+  return [...document.querySelectorAll('#mh-amenities input:checked')].map(c=>c.value);
+}
+
+function syncAmenities(){
+  const selected=selectedAmenities();
+  setv('mh-desc',selected.join(', '));
+  const summary=el('mh-amenities-summary');
+  if(summary)summary.textContent=selected.length?selected.join(', '):'Seleccionar comodidades';
+}
+
+function setAmenities(value){
+  const selected=(value||'').split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
+  document.querySelectorAll('#mh-amenities input[type="checkbox"]').forEach(c=>{
+    c.checked=selected.includes(c.value.toLowerCase());
+  });
+  syncAmenities();
+  closeAmenities();
+}
+
+function closeAmenities(){
+  const menu=el('mh-amenities');
+  if(menu)menu.open=false;
 }
 
 let _tt;
