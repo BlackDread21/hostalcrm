@@ -3,37 +3,37 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>PMS-CRM Â· High Systems Peru</title>
+<title>PMS-CRM · High Systems Peru</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ══════════════════════════════════════════
      LOGIN
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+══════════════════════════════════════════ -->
 <div id="login">
   <div class="lb">
     <div class="ll">
       <h2 id="ll-name">Hostal <span>PMS</span></h2>
-      <p>by High Systems Peru Â· Sistema CRM hotelero</p>
+      <p>by High Systems Peru · Sistema CRM hotelero</p>
     </div>
     <div class="field"><label>Correo</label>
       <input id="le" type="email" placeholder="admin@hostal.com" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div class="field"><label>ContraseÃ±a</label>
-      <input id="lp" type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="field"><label>Contraseña</label>
+      <input id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <button class="btn btn-p w100" style="justify-content:center;margin-top:4px" onclick="doLogin()">Ingresar â†’</button>
+    <button class="btn btn-p w100" style="justify-content:center;margin-top:4px" onclick="doLogin()">Ingresar →</button>
     <div id="lerr" class="lerr hidden"></div>
-    <p class="sm muted ta-c" style="margin-top:14px">Demo: admin@hostal.com Â· 123456</p>
+    <p class="sm muted ta-c" style="margin-top:14px">Demo: admin@hostal.com · 123456</p>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ══════════════════════════════════════════
      APP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+══════════════════════════════════════════ -->
 <div id="app" class="hidden">
   <aside id="sidebar">
     <div class="sl">
@@ -41,46 +41,46 @@
       <p>by High Systems Peru</p>
     </div>
     <div class="su">
-      <div class="sun" id="sb-uname">â€”</div>
-      <div class="sur" id="sb-role">â€”</div>
+      <div class="sun" id="sb-uname">—</div>
+      <div class="sur" id="sb-role">—</div>
     </div>
 
     <div id="nav-admin" class="hidden">
       <div class="ss">Principal</div>
-      <div class="ni" data-p="dashboard"><span class="ic">ðŸ“Š</span>Dashboard</div>
-      <div class="ss">OperaciÃ³n</div>
-      <div class="ni" data-p="habitaciones"><span class="ic">ðŸ›</span>Habitaciones</div>
-      <div class="ni" data-p="reservas"><span class="ic">ðŸ“…</span>Reservas</div>
-      <div class="ni" data-p="checkin"><span class="ic">â†˜</span>Check-in</div>
-      <div class="ni" data-p="checkout"><span class="ic">â†—</span>Check-out</div>
+      <div class="ni" data-p="dashboard"><span class="ic">📊</span>Dashboard</div>
+      <div class="ss">Operación</div>
+      <div class="ni" data-p="habitaciones"><span class="ic">🛏</span>Habitaciones</div>
+      <div class="ni" data-p="reservas"><span class="ic">📅</span>Reservas</div>
+      <div class="ni" data-p="checkin"><span class="ic">↘</span>Check-in</div>
+      <div class="ni" data-p="checkout"><span class="ic">↗</span>Check-out</div>
       <div class="ss">CRM</div>
-      <div class="ni" data-p="huespedes"><span class="ic">ðŸ‘¤</span>HuÃ©spedes</div>
-      <div class="ni" data-p="fidelizacion"><span class="ic">ðŸ†</span>FidelizaciÃ³n</div>
-      <div class="ni" data-p="resenas"><span class="ic">â­</span>ReseÃ±as + IA</div>
-      <div class="ni" data-p="comunicaciones"><span class="ic">ðŸ’¬</span>Comunicaciones</div>
+      <div class="ni" data-p="huespedes"><span class="ic">👤</span>Huéspedes</div>
+      <div class="ni" data-p="fidelizacion"><span class="ic">🏆</span>Fidelización</div>
+      <div class="ni" data-p="resenas"><span class="ic">⭐</span>Reseñas + IA</div>
+      <div class="ni" data-p="comunicaciones"><span class="ic">💬</span>Comunicaciones</div>
       <div class="ss">Marketing</div>
-      <div class="ni" data-p="campanas"><span class="ic">ðŸ“£</span>CampaÃ±as ROI</div>
+      <div class="ni" data-p="campanas"><span class="ic">📣</span>Campañas ROI</div>
       <div class="ss">Calidad</div>
-      <div class="ni" data-p="checklist"><span class="ic">ðŸŒŸ</span>Checklist 3â˜…</div>
+      <div class="ni" data-p="checklist"><span class="ic">🌟</span>Checklist 3★</div>
     </div>
 
     <div id="nav-recepcion" class="hidden">
-      <div class="ss">RecepciÃ³n</div>
-      <div class="ni" data-p="mapa"><span class="ic">ðŸ—º</span>Mapa de pisos</div>
-      <div class="ni" data-p="checkin"><span class="ic">â†˜</span>Check-in</div>
-      <div class="ni" data-p="checkout"><span class="ic">â†—</span>Check-out</div>
-      <div class="ni" data-p="huespedes"><span class="ic">ðŸ‘¤</span>HuÃ©spedes</div>
-      <div class="ni" data-p="reservas"><span class="ic">ðŸ“…</span>Reservas</div>
+      <div class="ss">Recepción</div>
+      <div class="ni" data-p="mapa"><span class="ic">🗺</span>Mapa de pisos</div>
+      <div class="ni" data-p="checkin"><span class="ic">↘</span>Check-in</div>
+      <div class="ni" data-p="checkout"><span class="ic">↗</span>Check-out</div>
+      <div class="ni" data-p="huespedes"><span class="ic">👤</span>Huéspedes</div>
+      <div class="ni" data-p="reservas"><span class="ic">📅</span>Reservas</div>
     </div>
 
     <div id="nav-limpieza" class="hidden">
       <div class="ss">Limpieza</div>
-      <div class="ni" data-p="cola"><span class="ic">ðŸ§¹</span>Cola de cuartos</div>
-      <div class="ni" data-p="incidencias"><span class="ic">âš </span>Incidencias</div>
+      <div class="ni" data-p="cola"><span class="ic">🧹</span>Cola de cuartos</div>
+      <div class="ni" data-p="incidencias"><span class="ic">⚠</span>Incidencias</div>
     </div>
 
     <div class="sf">
-      <button class="btn btn-o btn-sm w100" style="justify-content:center" onclick="doLogout()">Cerrar sesiÃ³n</button>
+      <button class="btn btn-o btn-sm w100" style="justify-content:center" onclick="doLogout()">Cerrar sesión</button>
     </div>
   </aside>
 
@@ -90,21 +90,21 @@
       <!-- DASHBOARD -->
       <div id="pg-dashboard" class="hidden">
         <div class="ph"><div><h1>Dashboard</h1><p id="dash-date"></p></div>
-          <button class="btn btn-o btn-sm" onclick="go('dashboard')">â†º Actualizar</button>
+          <button class="btn btn-o btn-sm" onclick="go('dashboard')">↺ Actualizar</button>
         </div>
         <div class="sg">
-          <div class="st cg"><div class="st-l">Habitaciones libres</div><div class="st-v" id="d1">â€”</div></div>
-          <div class="st cr"><div class="st-l">Ocupadas</div><div class="st-v" id="d2">â€”</div></div>
-          <div class="st cy"><div class="st-l">En limpieza</div><div class="st-v" id="d3">â€”</div></div>
-          <div class="st ca"><div class="st-l">Reservadas</div><div class="st-v" id="d4">â€”</div></div>
-          <div class="st cp"><div class="st-l">Check-outs hoy</div><div class="st-v" id="d5">â€”</div></div>
-          <div class="st ck"><div class="st-l">HuÃ©spedes VIP</div><div class="st-v" id="d6">â€”</div></div>
+          <div class="st cg"><div class="st-l">Habitaciones libres</div><div class="st-v" id="d1">—</div></div>
+          <div class="st cr"><div class="st-l">Ocupadas</div><div class="st-v" id="d2">—</div></div>
+          <div class="st cy"><div class="st-l">En limpieza</div><div class="st-v" id="d3">—</div></div>
+          <div class="st ca"><div class="st-l">Reservadas</div><div class="st-v" id="d4">—</div></div>
+          <div class="st cp"><div class="st-l">Check-outs hoy</div><div class="st-v" id="d5">—</div></div>
+          <div class="st ck"><div class="st-l">Huéspedes VIP</div><div class="st-v" id="d6">—</div></div>
         </div>
         <div class="flex g2 wrap">
           <div class="card grow" style="min-width:280px">
             <div class="ct">Reservas activas</div>
             <div class="tw"><table>
-              <thead><tr><th>HuÃ©sped</th><th>Hab.</th><th>Salida</th><th>Estado</th></tr></thead>
+              <thead><tr><th>Huésped</th><th>Hab.</th><th>Salida</th><th>Estado</th></tr></thead>
               <tbody id="d-tbl"></tbody>
             </table></div>
           </div>
@@ -118,11 +118,11 @@
       <!-- HABITACIONES -->
       <div id="pg-habitaciones" class="hidden">
         <div class="ph"><div><h1>Habitaciones</h1><p>Inventario completo de cuartos</p></div>
-          <button class="btn btn-p btn-sm" onclick="openMod('m-hab');resetForm('hab')">+ Nueva habitaciÃ³n</button>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-hab');resetForm('hab')">+ Nueva habitación</button>
         </div>
         <div class="card">
           <div class="flex aic g2 wrap" style="margin-bottom:14px">
-            <input id="hab-q" placeholder="Buscar nÃºmero o tipoâ€¦" style="max-width:240px" oninput="rHabs()"/>
+            <input id="hab-q" placeholder="Buscar número o tipo…" style="max-width:240px" oninput="rHabs()"/>
             <select id="hab-f" style="max-width:150px" onchange="rHabs()">
               <option value="">Todos los estados</option>
               <option value="libre">Libre</option><option value="ocupada">Ocupada</option>
@@ -131,7 +131,7 @@
             </select>
           </div>
           <div class="tw"><table>
-            <thead><tr><th>NÂ°</th><th>Tipo</th><th>Piso</th><th>Precio</th><th>Cap.</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>N°</th><th>Tipo</th><th>Piso</th><th>Precio</th><th>Cap.</th><th>Estado</th><th></th></tr></thead>
             <tbody id="hab-tbl"></tbody>
           </table></div>
         </div>
@@ -139,7 +139,7 @@
 
       <!-- MAPA -->
       <div id="pg-mapa" class="hidden">
-        <div class="ph"><div><h1>Mapa de pisos</h1><p>Toca una habitaciÃ³n para actuar</p></div>
+        <div class="ph"><div><h1>Mapa de pisos</h1><p>Toca una habitación para actuar</p></div>
           <div class="flex g1 wrap">
             <span class="badge bv-libre">Libre</span><span class="badge bv-ocupada">Ocupada</span>
             <span class="badge bv-limpieza">Limpieza</span><span class="badge bv-reservada">Reservada</span>
@@ -148,14 +148,14 @@
         <div id="mapa-c" class="rooms-grid"></div>
       </div>
 
-      <!-- HUÃ‰SPEDES CRM -->
+      <!-- HUÉSPEDES CRM -->
       <div id="pg-huespedes" class="hidden">
-        <div class="ph"><div><h1>HuÃ©spedes</h1><p>Perfiles CRM Â· historial Â· segmentaciÃ³n</p></div>
-          <button class="btn btn-p btn-sm" onclick="openMod('m-huesp');resetForm('huesp')">+ Nuevo huÃ©sped</button>
+        <div class="ph"><div><h1>Huéspedes</h1><p>Perfiles CRM · historial · segmentación</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-huesp');resetForm('huesp')">+ Nuevo huésped</button>
         </div>
         <div class="card">
           <div class="flex aic g2 wrap" style="margin-bottom:14px">
-            <input id="hu-q" placeholder="Buscar nombre, DNI o telÃ©fonoâ€¦" style="max-width:280px" oninput="rHuespedes()"/>
+            <input id="hu-q" placeholder="Buscar nombre, DNI o teléfono…" style="max-width:280px" oninput="rHuespedes()"/>
             <select id="hu-f" style="max-width:150px" onchange="rHuespedes()">
               <option value="">Todos los segmentos</option>
               <option value="nuevo">Nuevo</option><option value="recurrente">Recurrente</option>
@@ -164,78 +164,78 @@
             </select>
           </div>
           <div class="tw"><table>
-            <thead><tr><th>Nombre</th><th>DNI</th><th>Tel.</th><th>Segmento</th><th>EstadÃ­as</th><th>Gasto total</th><th>Canal</th><th></th></tr></thead>
+            <thead><tr><th>Nombre</th><th>DNI</th><th>Tel.</th><th>Segmento</th><th>Estadías</th><th>Gasto total</th><th>Canal</th><th></th></tr></thead>
             <tbody id="hu-tbl"></tbody>
           </table></div>
         </div>
       </div>
 
-      <!-- PERFIL HUÃ‰SPED (sub-pÃ¡gina) -->
+      <!-- PERFIL HUÉSPED (sub-página) -->
       <div id="pg-perfil" class="hidden">
         <div class="ph">
-          <div><h1>Perfil del huÃ©sped</h1><p>Vista CRM completa</p></div>
-          <button class="btn btn-o btn-sm" onclick="go('huespedes')">â† Volver</button>
+          <div><h1>Perfil del huésped</h1><p>Vista CRM completa</p></div>
+          <button class="btn btn-o btn-sm" onclick="go('huespedes')">← Volver</button>
         </div>
         <div id="perfil-c"></div>
       </div>
 
-      <!-- FIDELIZACIÃ“N -->
+      <!-- FIDELIZACIÓN -->
       <div id="pg-fidelizacion" class="hidden">
-        <div class="ph"><div><h1>Pipeline de fidelizaciÃ³n</h1><p>Nuevo â†’ Recurrente â†’ VIP</p></div></div>
+        <div class="ph"><div><h1>Pipeline de fidelización</h1><p>Nuevo → Recurrente → VIP</p></div></div>
         <div class="pipe" id="pipe-c"></div>
       </div>
 
-      <!-- RESEÃ‘AS + IA -->
+      <!-- RESEÑAS + IA -->
       <div id="pg-resenas" class="hidden">
-        <div class="ph"><div><h1>ReseÃ±as + IA</h1><p>Gestiona y responde con inteligencia artificial</p></div>
-          <button class="btn btn-p btn-sm" onclick="openMod('m-resena');resetForm('resena')">+ Nueva reseÃ±a</button>
+        <div class="ph"><div><h1>Reseñas + IA</h1><p>Gestiona y responde con inteligencia artificial</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-resena');resetForm('resena')">+ Nueva reseña</button>
         </div>
         <div class="sg">
-          <div class="st cg"><div class="st-l">Promedio general</div><div class="st-v" id="res-avg">â€”</div></div>
-          <div class="st ca"><div class="st-l">Total reseÃ±as</div><div class="st-v" id="res-tot">â€”</div></div>
-          <div class="st cy"><div class="st-l">Sin responder</div><div class="st-v" id="res-pen">â€”</div></div>
+          <div class="st cg"><div class="st-l">Promedio general</div><div class="st-v" id="res-avg">—</div></div>
+          <div class="st ca"><div class="st-l">Total reseñas</div><div class="st-v" id="res-tot">—</div></div>
+          <div class="st cy"><div class="st-l">Sin responder</div><div class="st-v" id="res-pen">—</div></div>
         </div>
         <div id="res-lista" class="flex col g2"></div>
       </div>
 
       <!-- COMUNICACIONES CRM -->
       <div id="pg-comunicaciones" class="hidden">
-        <div class="ph"><div><h1>Comunicaciones</h1><p>Mensajes automÃ¡ticos a huÃ©spedes</p></div>
-          <button class="btn btn-p btn-sm" onclick="openMod('m-comu')">+ Nueva comunicaciÃ³n</button>
+        <div class="ph"><div><h1>Comunicaciones</h1><p>Mensajes automáticos a huéspedes</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-comu')">+ Nueva comunicación</button>
         </div>
         <div class="card" style="margin-bottom:16px">
-          <div class="ct">Plantillas rÃ¡pidas con IA</div>
+          <div class="ct">Plantillas rápidas con IA</div>
           <div class="flex g2 wrap">
-            <button class="btn btn-o btn-sm" onclick="genPlantilla('bienvenida')">ðŸ“© Bienvenida</button>
-            <button class="btn btn-o btn-sm" onclick="genPlantilla('post_checkout')">ðŸ™ Post check-out</button>
-            <button class="btn btn-o btn-sm" onclick="genPlantilla('oferta')">ðŸŽ Oferta especial</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('bienvenida')">📩 Bienvenida</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('post_checkout')">🙏 Post check-out</button>
+            <button class="btn btn-o btn-sm" onclick="genPlantilla('oferta')">🎁 Oferta especial</button>
             <button class="btn btn-o btn-sm" onclick="genPlantilla('retencion')">Retención VIP</button>
           </div>
-          <div id="plantilla-out" class="ia-output" style="margin-top:12px">Selecciona una plantilla para generar el mensaje con IAâ€¦</div>
+          <div id="plantilla-out" class="ia-output" style="margin-top:12px">Selecciona una plantilla para generar el mensaje con IA…</div>
         </div>
         <div class="card">
           <div class="ct">Historial de comunicaciones</div>
           <div class="tw"><table>
-            <thead><tr><th>HuÃ©sped</th><th>Tipo</th><th>Canal</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Huésped</th><th>Tipo</th><th>Canal</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
             <tbody id="comu-tbl"></tbody>
           </table></div>
         </div>
       </div>
 
-      <!-- CAMPAÃ‘AS -->
+      <!-- CAMPAÑAS -->
       <div id="pg-campanas" class="hidden">
-        <div class="ph"><div><h1>CampaÃ±as de marketing</h1><p>ROI por canal Â· TikTok Â· Instagram Â· Google</p></div>
-          <button class="btn btn-p btn-sm" onclick="openMod('m-camp');resetForm('camp')">+ Nueva campaÃ±a</button>
+        <div class="ph"><div><h1>Campañas de marketing</h1><p>ROI por canal · TikTok · Instagram · Google</p></div>
+          <button class="btn btn-p btn-sm" onclick="openMod('m-camp');resetForm('camp')">+ Nueva campaña</button>
         </div>
         <div class="sg">
           <div class="st"><div class="st-l">Total invertido</div><div class="st-v" id="c-inv">S/0</div></div>
           <div class="st cg"><div class="st-l">Reservas generadas</div><div class="st-v" id="c-res">0</div></div>
           <div class="st ca"><div class="st-l">Ingresos atribuidos</div><div class="st-v" id="c-ing">S/0</div></div>
-          <div class="st cp"><div class="st-l">ROI promedio</div><div class="st-v" id="c-roi">â€”</div></div>
+          <div class="st cp"><div class="st-l">ROI promedio</div><div class="st-v" id="c-roi">—</div></div>
         </div>
         <div class="card">
           <div class="tw"><table>
-            <thead><tr><th>CampaÃ±a</th><th>Canal</th><th>InversiÃ³n</th><th>Reservas</th><th>Ingresos</th><th>ROI</th><th>Fecha</th><th></th></tr></thead>
+            <thead><tr><th>Campaña</th><th>Canal</th><th>Inversión</th><th>Reservas</th><th>Ingresos</th><th>ROI</th><th>Fecha</th><th></th></tr></thead>
             <tbody id="camp-tbl"></tbody>
           </table></div>
         </div>
@@ -243,20 +243,20 @@
 
       <!-- CHECK-IN -->
       <div id="pg-checkin" class="hidden">
-        <div class="ph"><div><h1>Check-in</h1><p>Registrar llegada de huÃ©sped</p></div></div>
+        <div class="ph"><div><h1>Check-in</h1><p>Registrar llegada de huésped</p></div></div>
         <div class="card" style="max-width:560px">
-          <div class="ct">Datos del huÃ©sped</div>
+          <div class="ct">Datos del huésped</div>
           <div class="gr2">
-            <div class="field"><label>Nombre completo *</label><input id="ci-nom" placeholder="Juan PÃ©rez GarcÃ­a"/></div>
+            <div class="field"><label>Nombre completo *</label><input id="ci-nom" placeholder="Juan Pérez García"/></div>
             <div class="field"><label>DNI / Pasaporte *</label><input id="ci-dni" placeholder="12345678"/></div>
           </div>
           <div class="gr2">
-            <div class="field"><label>TelÃ©fono</label><input id="ci-tel" placeholder="955 123 456"/></div>
+            <div class="field"><label>Teléfono</label><input id="ci-tel" placeholder="955 123 456"/></div>
             <div class="field"><label>Email</label><input id="ci-ema" type="email" placeholder="juan@correo.com"/></div>
           </div>
-          <div class="ct" style="margin-top:4px">EstadÃ­a</div>
+          <div class="ct" style="margin-top:4px">Estadía</div>
           <div class="gr2">
-            <div class="field"><label>HabitaciÃ³n libre *</label><select id="ci-hab"></select></div>
+            <div class="field"><label>Habitación libre *</label><select id="ci-hab"></select></div>
             <div class="field"><label>Fecha de salida *</label><input id="ci-sal" type="date"/></div>
           </div>
           <div class="gr2">
@@ -269,19 +269,19 @@
                 <option value="otro">Otro</option>
               </select>
             </div>
-            <div class="field"><label>Notas</label><input id="ci-not" placeholder="Observacionesâ€¦"/></div>
+            <div class="field"><label>Notas</label><input id="ci-not" placeholder="Observaciones…"/></div>
           </div>
-          <button class="btn btn-g" onclick="doCheckin()">âœ“ Confirmar Check-in</button>
+          <button class="btn btn-g" onclick="doCheckin()">✓ Confirmar Check-in</button>
         </div>
       </div>
 
       <!-- CHECK-OUT -->
       <div id="pg-checkout" class="hidden">
-        <div class="ph"><div><h1>Check-out</h1><p>Registrar salida de huÃ©sped</p></div></div>
+        <div class="ph"><div><h1>Check-out</h1><p>Registrar salida de huésped</p></div></div>
         <div class="card">
           <div class="ct">Reservas activas</div>
           <div class="tw"><table>
-            <thead><tr><th>HuÃ©sped</th><th>Segmento</th><th>HabitaciÃ³n</th><th>Entrada</th><th>Salida</th><th>Noches</th><th>Total</th><th></th></tr></thead>
+            <thead><tr><th>Huésped</th><th>Segmento</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Noches</th><th>Total</th><th></th></tr></thead>
             <tbody id="co-tbl"></tbody>
           </table></div>
         </div>
@@ -289,12 +289,12 @@
 
       <!-- RESERVAS -->
       <div id="pg-reservas" class="hidden">
-        <div class="ph"><div><h1>Reservas</h1><p>GestiÃ³n completa</p></div>
+        <div class="ph"><div><h1>Reservas</h1><p>Gestión completa</p></div>
           <button class="btn btn-p btn-sm" id="btn-nueva-reserva">+ Nueva reserva</button>
         </div>
         <div class="card">
           <div class="flex aic g2 wrap" style="margin-bottom:14px">
-            <input id="res-q" placeholder="Buscar huÃ©spedâ€¦" style="max-width:240px" oninput="rReservas()"/>
+            <input id="res-q" placeholder="Buscar huésped…" style="max-width:240px" oninput="rReservas()"/>
             <select id="res-f" style="max-width:150px" onchange="rReservas()">
               <option value="">Todos</option><option value="activa">Activa</option>
               <option value="pendiente">Pendiente</option><option value="checkout">Check-out</option>
@@ -302,7 +302,7 @@
             </select>
           </div>
           <div class="tw"><table>
-            <thead><tr><th>HuÃ©sped</th><th>Hab.</th><th>Entrada</th><th>Salida</th><th>Canal</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Huésped</th><th>Hab.</th><th>Entrada</th><th>Salida</th><th>Canal</th><th>Total</th><th>Estado</th><th></th></tr></thead>
             <tbody id="res-tbl"></tbody>
           </table></div>
         </div>
@@ -321,15 +321,15 @@
         </div>
         <div class="card">
           <div class="tw"><table>
-            <thead><tr><th>HabitaciÃ³n</th><th>DescripciÃ³n</th><th>Prioridad</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
+            <thead><tr><th>Habitación</th><th>Descripción</th><th>Prioridad</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
             <tbody id="inci-tbl"></tbody>
           </table></div>
         </div>
       </div>
 
-      <!-- CHECKLIST 3â˜… -->
+      <!-- CHECKLIST 3★ -->
       <div id="pg-checklist" class="hidden">
-        <div class="ph"><div><h1>Checklist 3 estrellas â­â­â­</h1><p>Requisitos MINCETUR</p></div></div>
+        <div class="ph"><div><h1>Checklist 3 estrellas ⭐⭐⭐</h1><p>Requisitos MINCETUR</p></div></div>
         <div class="card" style="margin-bottom:18px">
           <div class="flex jcb aic" style="margin-bottom:8px">
             <span class="bold">Progreso total</span>
@@ -345,17 +345,17 @@
   </div><!-- /main -->
 </div><!-- /app -->
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ══════════════════════════════════════════
      MODALES
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+══════════════════════════════════════════ -->
 
-<!-- HabitaciÃ³n -->
+<!-- Habitación -->
 <div id="m-hab" class="ov hidden">
   <div class="mo">
-    <div class="mt" id="mh-title">Nueva habitaciÃ³n</div>
+    <div class="mt" id="mh-title">Nueva habitación</div>
     <input type="hidden" id="mh-id"/>
     <div class="gr2">
-      <div class="field"><label>NÃºmero *</label><input id="mh-num" placeholder="101"/></div>
+      <div class="field"><label>Número *</label><input id="mh-num" placeholder="101"/></div>
       <div class="field"><label>Piso</label><input id="mh-piso" type="number" placeholder="1"/></div>
     </div>
     <div class="gr3">
@@ -369,7 +369,7 @@
       <div class="field"><label>Estado</label>
         <select id="mh-est"><option value="libre">Libre</option><option value="ocupada">Ocupada</option><option value="limpieza">Limpieza</option><option value="reservada">Reservada</option><option value="mantenimiento">Mantenimiento</option></select>
       </div>
-      <div class="field"><label>Comodidades</label><input id="mh-desc" placeholder="TV, WiFi, baÃ±o privadoâ€¦"/></div>
+      <div class="field"><label>Comodidades</label><input id="mh-desc" placeholder="TV, WiFi, baño privado…"/></div>
     </div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-hab')">Cancelar</button>
@@ -378,17 +378,17 @@
   </div>
 </div>
 
-<!-- HuÃ©sped -->
+<!-- Huésped -->
 <div id="m-huesp" class="ov hidden">
   <div class="mo">
-    <div class="mt" id="mhu-title">Nuevo huÃ©sped</div>
+    <div class="mt" id="mhu-title">Nuevo huésped</div>
     <input type="hidden" id="mhu-id"/>
     <div class="gr2">
-      <div class="field"><label>Nombre *</label><input id="mhu-nom" placeholder="Juan PÃ©rez GarcÃ­a"/></div>
+      <div class="field"><label>Nombre *</label><input id="mhu-nom" placeholder="Juan Pérez García"/></div>
       <div class="field"><label>DNI / Pasaporte</label><input id="mhu-dni" placeholder="12345678"/></div>
     </div>
     <div class="gr2">
-      <div class="field"><label>TelÃ©fono</label><input id="mhu-tel" placeholder="955 123 456"/></div>
+      <div class="field"><label>Teléfono</label><input id="mhu-tel" placeholder="955 123 456"/></div>
       <div class="field"><label>Email</label><input id="mhu-ema" type="email" placeholder="juan@correo.com"/></div>
     </div>
     <div class="gr2">
@@ -400,10 +400,10 @@
         <select id="mhu-seg"><option value="nuevo">Nuevo</option><option value="recurrente">Recurrente</option><option value="vip">VIP</option><option value="corporativo">Corporativo</option><option value="mochilero">Mochilero</option><option value="grupo">Grupo</option></select>
       </div>
       <div class="field"><label>Canal frecuente</label>
-        <select id="mhu-canal"><option value="">â€”</option><option value="directo">Directo</option><option value="booking">Booking.com</option><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option></select>
+        <select id="mhu-canal"><option value="">—</option><option value="directo">Directo</option><option value="booking">Booking.com</option><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="google">Google</option><option value="whatsapp">WhatsApp</option></select>
       </div>
     </div>
-    <div class="field"><label>Notas CRM</label><textarea id="mhu-notas" placeholder="Preferencias, observaciones especialesâ€¦"></textarea></div>
+    <div class="field"><label>Notas CRM</label><textarea id="mhu-notas" placeholder="Preferencias, observaciones especiales…"></textarea></div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-huesp')">Cancelar</button>
       <button class="btn btn-p" onclick="saveHuesped()">Guardar</button>
@@ -417,8 +417,8 @@
     <div class="mt" id="mres-title">Nueva reserva</div>
     <input type="hidden" id="mres-id"/>
     <div class="gr2">
-      <div class="field"><label>HuÃ©sped *</label><select id="mres-hu"></select></div>
-      <div class="field"><label>HabitaciÃ³n *</label><select id="mres-hab"></select></div>
+      <div class="field"><label>Huésped *</label><select id="mres-hu"></select></div>
+      <div class="field"><label>Habitación *</label><select id="mres-hab"></select></div>
     </div>
     <div class="gr2">
       <div class="field"><label>Fecha entrada *</label><input id="mres-ent" type="date"/></div>
@@ -428,7 +428,7 @@
       <div class="field"><label>Canal</label>
         <select id="mres-ori"><option value="directo">Directo</option><option value="booking">Booking</option><option value="airbnb">Airbnb</option><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="whatsapp">WhatsApp</option><option value="google">Google</option><option value="otro">Otro</option></select>
       </div>
-      <div class="field"><label>Total S/ (auto)</label><input id="mres-tot" type="number" placeholder="Calculadoâ€¦"/></div>
+      <div class="field"><label>Total S/ (auto)</label><input id="mres-tot" type="number" placeholder="Calculado…"/></div>
       <div class="field"><label>Estado</label>
         <select id="mres-est"><option value="pendiente">Pendiente</option><option value="activa">Confirmada</option><option value="cancelada">Cancelada</option></select>
       </div>
@@ -440,24 +440,24 @@
   </div>
 </div>
 
-<!-- ReseÃ±a -->
+<!-- Reseña -->
 <div id="m-resena" class="ov hidden">
   <div class="mo">
-    <div class="mt">Nueva reseÃ±a</div>
+    <div class="mt">Nueva reseña</div>
     <input type="hidden" id="mre-id"/>
     <div class="gr2">
       <div class="field"><label>Plataforma</label>
         <select id="mre-plat"><option value="google">Google</option><option value="booking">Booking.com</option><option value="tripadvisor">TripAdvisor</option><option value="otro">Otro</option></select>
       </div>
-      <div class="field"><label>Autor</label><input id="mre-autor" placeholder="Nombre del reseÃ±ador"/></div>
+      <div class="field"><label>Autor</label><input id="mre-autor" placeholder="Nombre del reseñador"/></div>
     </div>
-    <div class="field"><label>PuntuaciÃ³n</label>
+    <div class="field"><label>Puntuación</label>
       <div class="ia-stars" id="stars-input">
-        <span onclick="setStar(1)">â˜†</span><span onclick="setStar(2)">â˜†</span><span onclick="setStar(3)">â˜†</span><span onclick="setStar(4)">â˜†</span><span onclick="setStar(5)">â˜†</span>
+        <span onclick="setStar(1)">☆</span><span onclick="setStar(2)">☆</span><span onclick="setStar(3)">☆</span><span onclick="setStar(4)">☆</span><span onclick="setStar(5)">☆</span>
       </div>
       <input type="hidden" id="mre-pts" value="5"/>
     </div>
-    <div class="field"><label>Texto de la reseÃ±a</label><textarea id="mre-txt" placeholder="Texto que escribiÃ³ el clienteâ€¦" rows="4"></textarea></div>
+    <div class="field"><label>Texto de la reseña</label><textarea id="mre-txt" placeholder="Texto que escribió el cliente…" rows="4"></textarea></div>
     <div class="field"><label>Fecha</label><input id="mre-fecha" type="date"/></div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-resena')">Cancelar</button>
@@ -466,12 +466,12 @@
   </div>
 </div>
 
-<!-- ComunicaciÃ³n -->
+<!-- Comunicación -->
 <div id="m-comu" class="ov hidden">
   <div class="mo">
-    <div class="mt">Nueva comunicaciÃ³n</div>
+    <div class="mt">Nueva comunicación</div>
     <div class="gr2">
-      <div class="field"><label>HuÃ©sped</label><select id="mco-hu"></select></div>
+      <div class="field"><label>Huésped</label><select id="mco-hu"></select></div>
       <div class="field"><label>Canal</label>
         <select id="mco-canal"><option value="whatsapp">WhatsApp</option><option value="email">Email</option></select>
       </div>
@@ -479,7 +479,7 @@
     <div class="field"><label>Tipo</label>
       <select id="mco-tipo"><option value="bienvenida">Bienvenida</option><option value="post_checkout">Post check-out</option><option value="oferta">Oferta especial</option><option value="retencion">Retención VIP</option><option value="cumpleanos">Cumpleaños</option></select>
     </div>
-    <div class="field"><label>Mensaje</label><textarea id="mco-msg" rows="5" placeholder="Escribe el mensaje o genera uno con IAâ€¦"></textarea></div>
+    <div class="field"><label>Mensaje</label><textarea id="mco-msg" rows="5" placeholder="Escribe el mensaje o genera uno con IA…"></textarea></div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-comu')">Cancelar</button>
       <button class="btn btn-p" onclick="saveComu()">Registrar</button>
@@ -487,10 +487,10 @@
   </div>
 </div>
 
-<!-- CampaÃ±a -->
+<!-- Campaña -->
 <div id="m-camp" class="ov hidden">
   <div class="mo">
-    <div class="mt">Nueva campaÃ±a</div>
+    <div class="mt">Nueva campaña</div>
     <input type="hidden" id="mc-id"/>
     <div class="field"><label>Nombre *</label><input id="mc-nom" placeholder="Promo finde largo mayo"/></div>
     <div class="gr2">
@@ -500,7 +500,7 @@
       <div class="field"><label>Fecha</label><input id="mc-fecha" type="date"/></div>
     </div>
     <div class="gr3">
-      <div class="field"><label>InversiÃ³n S/</label><input id="mc-inv" type="number" placeholder="150"/></div>
+      <div class="field"><label>Inversión S/</label><input id="mc-inv" type="number" placeholder="150"/></div>
       <div class="field"><label>Reservas obtenidas</label><input id="mc-res" type="number" placeholder="8"/></div>
       <div class="field"><label>Ingresos S/</label><input id="mc-ing" type="number" placeholder="960"/></div>
     </div>
@@ -516,12 +516,12 @@
   <div class="mo">
     <div class="mt">Reportar incidencia</div>
     <div class="gr2">
-      <div class="field"><label>HabitaciÃ³n</label><select id="mi-hab"></select></div>
+      <div class="field"><label>Habitación</label><select id="mi-hab"></select></div>
       <div class="field"><label>Prioridad</label>
         <select id="mi-pri"><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select>
       </div>
     </div>
-    <div class="field"><label>DescripciÃ³n *</label><textarea id="mi-desc" placeholder="Detalla el problemaâ€¦"></textarea></div>
+    <div class="field"><label>Descripción *</label><textarea id="mi-desc" placeholder="Detalla el problema…"></textarea></div>
     <div class="mf">
       <button class="btn btn-o" onclick="closeMod('m-inci')">Cancelar</button>
       <button class="btn btn-y" onclick="saveInci()">Reportar</button>
@@ -534,4 +534,5 @@
 <script src="app.js" defer></script>
 </body>
 </html>
+
 
